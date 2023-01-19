@@ -1,0 +1,12 @@
+md5: ce077f02eb4bc287ec610b6cb40ada89
+frozen: true
+deps:
+- path: book-links/cluster-genders.parquet
+  repo:
+    url: https://github.com/BoiseState/ol-processing-tools.git
+    rev_lock: de599c48772897348a79c2e8605b566392d07caa
+    rev: master
+outs:
+- md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+  size: 106886115
+  path: cluster-genders.parquet

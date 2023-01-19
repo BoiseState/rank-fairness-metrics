@@ -1,0 +1,12 @@
+/test-ratings.parquet
+/user-user.model
+/user-user-recs.parquet
+/user-user-metrics.json
+/item-item.model
+/item-item-recs.parquet
+/item-item-metrics.json
+/item-item-pairwise-metrics.json
+/user-user-pairwise-metrics.json
+/item-item-group-relevance.csv.gz
+/user-user-group-relevance.csv.gz
+/test-ratings-group-relevance.csv.gz

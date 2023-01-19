@@ -1,0 +1,2193 @@
+schema: '2.0'
+stages:
+  eval-split-AZ:
+    cmd: python -m scripts.split-ratings -d eval5 --min-ratings 10 --test-ratings
+      5 AZ
+    deps:
+    - path: data/AZ/ratings.parquet
+      md5: 34b85564594270315214de1e36d5a6e8
+      size: 302362488
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: scripts/split-ratings.py
+      md5: 83e164309e858c19cf929ddeecac9856
+      size: 2415
+    outs:
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+  eval-train-AZ-user-user:
+    cmd: python -m scripts.train-model  --train-data eval5 AZ user-user
+    deps:
+    - path: data/AZ/ratings.parquet
+      md5: 34b85564594270315214de1e36d5a6e8
+      size: 302362488
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/AZ/user-user.json
+      md5: cdf7fa82dbcb7bb596e8098f3f239834
+      size: 80
+    outs:
+    - path: eval5/AZ/user-user.model
+      md5: d9ec2b7ddc8862bdb9113617d09ae473
+      size: 229886250
+  AZ-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 AZ user-user
+    deps:
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 6bca82f9b4703df3acbbd3655ef43763
+      size: 449684
+    - path: eval5/AZ/user-user.model
+      md5: 56a244654ab581a111518b97aac9b990
+      size: 270222048
+    - path: tuning/AZ/user-user.json
+      md5: cdf7fa82dbcb7bb596e8098f3f239834
+      size: 80
+    outs:
+    - path: eval5/AZ/user-user-metrics.json
+      md5: dff04267d99b2fecebe3ab63a647f011
+      size: 36
+    - path: eval5/AZ/user-user-recs.parquet
+      md5: 11a17427652d7c6e38288d300b12c65f
+      size: 4223457
+  eval-train-AZ-item-item:
+    cmd: python -m scripts.train-model  --train-data eval5 AZ item-item
+    deps:
+    - path: data/AZ/ratings.parquet
+      md5: 34b85564594270315214de1e36d5a6e8
+      size: 302362488
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/AZ/item-item.json
+      md5: 3f3a14a85d0020ead808622c55060a0a
+      size: 63
+    outs:
+    - path: eval5/AZ/item-item.model
+      md5: 76c1de9624bedbc29ade6ac93051e985
+      size: 913041758
+  AZ-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 AZ item-item
+    deps:
+    - path: eval5/AZ/item-item.model
+      md5: 498bd75184da8e9229b67d83d20e1459
+      size: 936574569
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 6bca82f9b4703df3acbbd3655ef43763
+      size: 449684
+    - path: tuning/AZ/item-item.json
+      md5: 3f3a14a85d0020ead808622c55060a0a
+      size: 63
+    outs:
+    - path: eval5/AZ/item-item-metrics.json
+      md5: dff04267d99b2fecebe3ab63a647f011
+      size: 36
+    - path: eval5/AZ/item-item-recs.parquet
+      md5: 1deff7114221ac2d5a71d8d46befa2f9
+      size: 8059077
+  eval-train-AZ-als:
+    cmd: python -m scripts.train-model  --train-data eval5 AZ als
+    deps:
+    - path: data/AZ/ratings.parquet
+      md5: 34b85564594270315214de1e36d5a6e8
+      size: 302362488
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/AZ/als.json
+      md5: c096c581c6cb187328a13b93afe9b288
+      size: 121
+    outs:
+    - path: eval5/AZ/als.model
+      md5: 7a447e3a3ad9bd3d8e8aab64f808d0e0
+      size: 9830712560
+  AZ-als:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 AZ als
+    deps:
+    - path: eval5/AZ/als.model
+      md5: 7a447e3a3ad9bd3d8e8aab64f808d0e0
+      size: 9830712560
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: tuning/AZ/als.json
+      md5: c096c581c6cb187328a13b93afe9b288
+      size: 121
+    outs:
+    - path: eval5/AZ/als-metrics.json
+      md5: 872be36d7648fb63baf4a0ea5bab1e38
+      size: 74
+    - path: eval5/AZ/als-recs.parquet
+      md5: 905c9886120d8dca45415762789b4e6e
+      size: 21573748
+  eval-train-AZ-user-user-imp:
+    cmd: python -m scripts.train-model --drop-ratings -N user-user-imp --train-data
+      eval5 AZ user-user
+    deps:
+    - path: data/AZ/ratings.parquet
+      md5: 34b85564594270315214de1e36d5a6e8
+      size: 302362488
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/AZ/user-user-imp.json
+      md5: a942d231c1ce93fc7900fe2f57af868d
+      size: 79
+    outs:
+    - path: eval5/AZ/user-user-imp.model
+      md5: 9399b8656b7ed2dc1c6c4e37f0985626
+      size: 164176881
+  AZ-user-user-imp:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 --drop-ratings -N user-user-imp
+      --pretrained -n 1000 AZ user-user
+    deps:
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 6bca82f9b4703df3acbbd3655ef43763
+      size: 449684
+    - path: eval5/AZ/user-user-imp.model
+      md5: f3199848ed79c1c96a29280209577945
+      size: 202578962
+    - path: tuning/AZ/user-user-imp.json
+      md5: a942d231c1ce93fc7900fe2f57af868d
+      size: 79
+    outs:
+    - path: eval5/AZ/user-user-imp-metrics.json
+      md5: 9e3ff6477ad623acdc8f641032143b69
+      size: 76
+    - path: eval5/AZ/user-user-imp-recs.parquet
+      md5: 4e057d57898986ace1ada8972cdcfa6a
+      size: 25137031
+  eval-train-AZ-item-item-imp:
+    cmd: python -m scripts.train-model --drop-ratings -N item-item-imp --train-data
+      eval5 AZ item-item
+    deps:
+    - path: data/AZ/ratings.parquet
+      md5: 34b85564594270315214de1e36d5a6e8
+      size: 302362488
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/AZ/item-item-imp.json
+      md5: 19b2a99a6a00c1320ca5d46e5412dca4
+      size: 79
+    outs:
+    - path: eval5/AZ/item-item-imp.model
+      md5: 8745962415126ae57a80c29a79d92c2b
+      size: 5514275144
+  AZ-item-item-imp:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 --drop-ratings -N item-item-imp
+      --pretrained -n 1000 AZ item-item
+    deps:
+    - path: eval5/AZ/item-item-imp.model
+      md5: 9ddff25833fb3e312da67f057983ef1c
+      size: 5579515657
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 6bca82f9b4703df3acbbd3655ef43763
+      size: 449684
+    - path: tuning/AZ/item-item-imp.json
+      md5: 19b2a99a6a00c1320ca5d46e5412dca4
+      size: 79
+    outs:
+    - path: eval5/AZ/item-item-imp-metrics.json
+      md5: b5a24d6d2f7e0d147287371e7cfb3416
+      size: 75
+    - path: eval5/AZ/item-item-imp-recs.parquet
+      md5: e7f962d94aeb866416e52f4259ed4a90
+      size: 15456823
+  eval-train-AZ-wrls-imp:
+    cmd: python -m scripts.train-model --drop-ratings -N wrls-imp --train-data eval5
+      AZ wrls
+    deps:
+    - path: data/AZ/ratings.parquet
+      md5: 34b85564594270315214de1e36d5a6e8
+      size: 302362488
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/AZ/wrls-imp.json
+      md5: b59e14500a3f30cc28307adccc2f3593
+      size: 78
+    outs:
+    - path: eval5/AZ/wrls-imp.model
+      md5: c4fa2d4610a49313e87d32d35422e5d3
+      size: 6581958660
+  AZ-wrls-imp:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 --drop-ratings -N wrls-imp --pretrained
+      -n 1000 AZ wrls
+    deps:
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 6bca82f9b4703df3acbbd3655ef43763
+      size: 449684
+    - path: eval5/AZ/wrls-imp.model
+      md5: 5c9f9f2a0a47d5cb77d12af2f0181c27
+      size: 10637180243
+    - path: tuning/AZ/wrls-imp.json
+      md5: b59e14500a3f30cc28307adccc2f3593
+      size: 78
+    outs:
+    - path: eval5/AZ/wrls-imp-metrics.json
+      md5: 2e67a460570321564f6a1266b7d26d7e
+      size: 75
+    - path: eval5/AZ/wrls-imp-recs.parquet
+      md5: a0bb226ff5773c269279efbf506c25bb
+      size: 27739654
+  eval-train-AZ-bpr-imp:
+    cmd: python -m scripts.train-model --drop-ratings -N bpr-imp --train-data eval5
+      AZ bpr
+    deps:
+    - path: data/AZ/ratings.parquet
+      md5: 34b85564594270315214de1e36d5a6e8
+      size: 302362488
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/AZ/bpr-imp.json
+      md5: 4fb124217be60caa17ebe3e02ef33d4f
+      size: 102
+    outs:
+    - path: eval5/AZ/bpr-imp.model
+      md5: 4cad97cf6f478cf121bcc28ed5f4adbb
+      size: 287030054
+  AZ-bpr-imp:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 --drop-ratings -N bpr-imp --pretrained
+      -n 1000 AZ bpr
+    deps:
+    - path: eval5/AZ/bpr-imp.model
+      md5: 997672c5c74ebae3efe0312ce3c2e19a
+      size: 296428646
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 6bca82f9b4703df3acbbd3655ef43763
+      size: 449684
+    - path: tuning/AZ/bpr-imp.json
+      md5: 4fb124217be60caa17ebe3e02ef33d4f
+      size: 102
+    outs:
+    - path: eval5/AZ/bpr-imp-metrics.json
+      md5: 819db104ef05d63520ee48ca378f0641
+      size: 76
+    - path: eval5/AZ/bpr-imp-recs.parquet
+      md5: e88b32e0968c8f599c4260e813462a39
+      size: 24268449
+  eval-split-BX-E:
+    cmd: python -m scripts.split-ratings -d eval5 --min-ratings 10 --test-ratings
+      5 BX-E
+    deps:
+    - path: data/BX-E/ratings.parquet
+      md5: cfc5f8e674cadee8cd048e933df1ba6e
+      size: 3043969
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: scripts/split-ratings.py
+      md5: 83e164309e858c19cf929ddeecac9856
+      size: 2415
+    outs:
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: 1b6b9cb417b57c95f248d1e9ee8a2a2e
+      size: 353759
+  eval-train-BX-E-user-user:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-E user-user
+    deps:
+    - path: data/BX-E/ratings.parquet
+      md5: cfc5f8e674cadee8cd048e933df1ba6e
+      size: 3043969
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: 1b6b9cb417b57c95f248d1e9ee8a2a2e
+      size: 353759
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/BX-E/user-user.json
+      md5: 50fd40f0ceef51a4e3e529f84bdce15b
+      size: 80
+    outs:
+    - path: eval5/BX-E/user-user.model
+      md5: 30fd5a71025b6e2fd2ccc7fdddc380f4
+      size: 5200398
+  BX-E-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-E user-user
+    deps:
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: c473055218f76853f2b665bff549e385
+      size: 352428
+    - path: eval5/BX-E/user-user.model
+      md5: 426961fe4ff2a8f0de53920d16bbf0d8
+      size: 5063987
+    - path: tuning/BX-E/user-user.json
+      md5: 50fd40f0ceef51a4e3e529f84bdce15b
+      size: 80
+    outs:
+    - path: eval5/BX-E/user-user-metrics.json
+      md5: ea74ac0dcd47ee0a0b5fd3400f51f7b2
+      size: 76
+    - path: eval5/BX-E/user-user-recs.parquet
+      md5: 41d026902a373a8b6abd486a24aa5eb5
+      size: 5296523
+  eval-train-BX-E-item-item:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-E item-item
+    deps:
+    - path: data/BX-E/ratings.parquet
+      md5: cfc5f8e674cadee8cd048e933df1ba6e
+      size: 3043969
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: 1b6b9cb417b57c95f248d1e9ee8a2a2e
+      size: 353759
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/BX-E/item-item.json
+      md5: 0b292e8423a99c94ef9668a6575c5a82
+      size: 81
+    outs:
+    - path: eval5/BX-E/item-item.model
+      md5: 883b443ba0355d9bdfab18a9300a3125
+      size: 38740237
+  BX-E-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-E item-item
+    deps:
+    - path: eval5/BX-E/item-item.model
+      md5: a2602e462d091794df393cc6b3e5286e
+      size: 38740558
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: c473055218f76853f2b665bff549e385
+      size: 352428
+    - path: tuning/BX-E/item-item.json
+      md5: 0b292e8423a99c94ef9668a6575c5a82
+      size: 81
+    outs:
+    - path: eval5/BX-E/item-item-metrics.json
+      md5: ce467c644ef392c6dc26e9322f7b2104
+      size: 74
+    - path: eval5/BX-E/item-item-recs.parquet
+      md5: d0995273ec44c0be16aee76010330d80
+      size: 8830081
+  eval-train-BX-E-als:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-E als
+    deps:
+    - path: data/BX-E/ratings.parquet
+      md5: cfc5f8e674cadee8cd048e933df1ba6e
+      size: 3043969
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: 1b6b9cb417b57c95f248d1e9ee8a2a2e
+      size: 353759
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/BX-E/als.json
+      md5: ff7679dcb4491c12031522c4cb3ce0f8
+      size: 117
+    outs:
+    - path: eval5/BX-E/als.model
+      md5: 338a0334c4628935c2e87a5ca8a63d41
+      size: 212915912
+  BX-E-als:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-E als
+    deps:
+    - path: eval5/BX-E/als.model
+      md5: 338a0334c4628935c2e87a5ca8a63d41
+      size: 212915912
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: 1b6b9cb417b57c95f248d1e9ee8a2a2e
+      size: 353759
+    - path: tuning/BX-E/als.json
+      md5: ff7679dcb4491c12031522c4cb3ce0f8
+      size: 117
+    outs:
+    - path: eval5/BX-E/als-metrics.json
+      md5: 77400d3b76dc3dbdcc6b6d616e4d2bbe
+      size: 85
+    - path: eval5/BX-E/als-recs.parquet
+      md5: e5b0f4eae0d643104d057fad5c8f24cd
+      size: 8202244
+  eval-split-BX-I:
+    cmd: python -m scripts.split-ratings -d eval5 --min-ratings 10 --test-ratings
+      5 BX-I
+    deps:
+    - path: data/BX-I/ratings.parquet
+      md5: a12cec3da8304c9efd650d9bcf9e0ec3
+      size: 7251065
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: scripts/split-ratings.py
+      md5: 83e164309e858c19cf929ddeecac9856
+      size: 2415
+    outs:
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+  eval-train-BX-I-user-user:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-I user-user
+    deps:
+    - path: data/BX-I/ratings.parquet
+      md5: a12cec3da8304c9efd650d9bcf9e0ec3
+      size: 7251065
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/BX-I/user-user.json
+      md5: 7abdbec2bcc88fe50f6871f780aa98be
+      size: 80
+    outs:
+    - path: eval5/BX-I/user-user.model
+      md5: 3bdc0e85b14fb9614286de0de300c9c1
+      size: 8399679
+  BX-I-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-I user-user
+    deps:
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: d52baf59dcba06343123933aa0451970
+      size: 343326
+    - path: eval5/BX-I/user-user.model
+      md5: bd5472dd4db0518c56e890a04eb07b46
+      size: 7609627
+    - path: tuning/BX-I/user-user.json
+      md5: 7abdbec2bcc88fe50f6871f780aa98be
+      size: 80
+    outs:
+    - path: eval5/BX-I/user-user-metrics.json
+      md5: 5b0789c34f3833c746c7f9c46d140c2c
+      size: 74
+    - path: eval5/BX-I/user-user-recs.parquet
+      md5: 188eb143fe39c474584ed15eb48c211f
+      size: 17666316
+  eval-train-BX-I-item-item:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-I item-item
+    deps:
+    - path: data/BX-I/ratings.parquet
+      md5: a12cec3da8304c9efd650d9bcf9e0ec3
+      size: 7251065
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/BX-I/item-item.json
+      md5: 309f9ff49e57efa47e2e62016ab20333
+      size: 79
+    outs:
+    - path: eval5/BX-I/item-item.model
+      md5: fdd6e37b9a47a22844f1e002b09fdb74
+      size: 1221741314
+  BX-I-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-I item-item
+    deps:
+    - path: eval5/BX-I/item-item.model
+      md5: d4dcae634f6c2891381e497523f7180e
+      size: 1246310413
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: d52baf59dcba06343123933aa0451970
+      size: 343326
+    - path: tuning/BX-I/item-item.json
+      md5: 309f9ff49e57efa47e2e62016ab20333
+      size: 79
+    outs:
+    - path: eval5/BX-I/item-item-metrics.json
+      md5: 57569a9d5695526677b926ec9a176dc8
+      size: 74
+    - path: eval5/BX-I/item-item-recs.parquet
+      md5: 632d4afaf79c8349dfbecb90af438a95
+      size: 9716757
+  eval-train-BX-I-wrls:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-I wrls
+    deps:
+    - path: data/BX-I/ratings.parquet
+      md5: a12cec3da8304c9efd650d9bcf9e0ec3
+      size: 7251065
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/BX-I/wrls.json
+      md5: 0a1584ec794cd8623d8b977882d7dd92
+      size: 120
+    outs:
+    - path: eval5/BX-I/wrls.model
+      md5: 2b1b975dcc9a41a3f5f0d7adaa0d973a
+      size: 592367071
+  BX-I-wrls:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-I wrls
+    deps:
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: d52baf59dcba06343123933aa0451970
+      size: 343326
+    - path: eval5/BX-I/wrls.model
+      md5: d91b85f096f371b7c0b4748ae6bbcb85
+      size: 622205743
+    - path: tuning/BX-I/wrls.json
+      md5: 0a1584ec794cd8623d8b977882d7dd92
+      size: 120
+    outs:
+    - path: eval5/BX-I/wrls-metrics.json
+      md5: 2869889e45274d45a759cdfbf3c99d74
+      size: 71
+    - path: eval5/BX-I/wrls-recs.parquet
+      md5: 09b4ee478aba8e6b8d704d77de37774b
+      size: 24613772
+  eval-train-BX-I-bpr:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-I bpr
+    deps:
+    - path: data/BX-I/ratings.parquet
+      md5: a12cec3da8304c9efd650d9bcf9e0ec3
+      size: 7251065
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/BX-I/bpr.json
+      md5: 208fb35169f8376a4faee070b19e2e30
+      size: 101
+    outs:
+    - path: eval5/BX-I/bpr.model
+      md5: 546d984a6c84215c612cf07c2f0f1312
+      size: 325778359
+  BX-I-bpr:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-I bpr
+    deps:
+    - path: eval5/BX-I/bpr.model
+      md5: c965791192350aa1c744268639a01062
+      size: 326934527
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: d52baf59dcba06343123933aa0451970
+      size: 343326
+    - path: tuning/BX-I/bpr.json
+      md5: 208fb35169f8376a4faee070b19e2e30
+      size: 101
+    outs:
+    - path: eval5/BX-I/bpr-metrics.json
+      md5: 6d3a01b17027d61523bb8f5dd5b2f0b1
+      size: 73
+    - path: eval5/BX-I/bpr-recs.parquet
+      md5: 268ad7aadb7a3d8118a803a9ce92fe8f
+      size: 25729357
+  eval-split-GR-E:
+    cmd: python -m scripts.split-ratings -d eval5 --min-ratings 10 --test-ratings
+      5 GR-E
+    deps:
+    - path: data/GR-E/ratings.parquet
+      md5: 9207efc2b91514ae300352f4666394c5
+      size: 1400725167
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: scripts/split-ratings.py
+      md5: 83e164309e858c19cf929ddeecac9856
+      size: 2415
+    outs:
+    - path: eval5/GR-E/test-ratings.parquet
+      md5: cba9883217271dbab2fddb6c3a5789e7
+      size: 635140
+  eval-train-GR-E-user-user:
+    cmd: python -m scripts.train-model  --train-data eval5 GR-E user-user
+    deps:
+    - path: data/GR-E/ratings.parquet
+      md5: 9207efc2b91514ae300352f4666394c5
+      size: 1400725167
+    - path: eval5/GR-E/test-ratings.parquet
+      md5: cba9883217271dbab2fddb6c3a5789e7
+      size: 635140
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/GR-E/user-user.json
+      md5: 81425f3982937995f723534b6c247727
+      size: 78
+    outs:
+    - path: eval5/GR-E/user-user.model
+      md5: ec2d9c443ef523a65d5f944b540ac202
+      size: 1146204058
+  GR-E-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-E user-user
+    deps:
+    - path: eval5/GR-E/test-ratings.parquet
+      md5: 3296ba71b822ab789e77ea5261721d06
+      size: 543490
+    - path: eval5/GR-E/user-user.model
+      md5: fc830f1e2aee25c4647d6bf0912735f6
+      size: 1062309311
+    - path: tuning/GR-E/user-user.json
+      md5: 81425f3982937995f723534b6c247727
+      size: 78
+    outs:
+    - path: eval5/GR-E/user-user-metrics.json
+      md5: dff04267d99b2fecebe3ab63a647f011
+      size: 36
+    - path: eval5/GR-E/user-user-recs.parquet
+      md5: 35689f55692ba84ac8f1100448adba5e
+      size: 16895227
+  eval-train-GR-E-item-item:
+    cmd: python -m scripts.train-model  --train-data eval5 GR-E item-item
+    deps:
+    - path: data/GR-E/ratings.parquet
+      md5: 9207efc2b91514ae300352f4666394c5
+      size: 1400725167
+    - path: eval5/GR-E/test-ratings.parquet
+      md5: cba9883217271dbab2fddb6c3a5789e7
+      size: 635140
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/GR-E/item-item.json
+      md5: 75e06020ba965a8bb7a75d1f379e113a
+      size: 77
+    outs:
+    - path: eval5/GR-E/item-item.model
+      md5: 026632ca2c21ec2e1e0f6ec0457841ea
+      size: 2597977081
+  GR-E-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-E item-item
+    deps:
+    - path: eval5/GR-E/item-item.model
+      md5: b9814a55549cf095d37a735ff2bc7827
+      size: 1810561346
+    - path: eval5/GR-E/test-ratings.parquet
+      md5: 3296ba71b822ab789e77ea5261721d06
+      size: 543490
+    - path: tuning/GR-E/item-item.json
+      md5: 75e06020ba965a8bb7a75d1f379e113a
+      size: 77
+    outs:
+    - path: eval5/GR-E/item-item-metrics.json
+      md5: 4b37090635145a612ad7173ef437459a
+      size: 76
+    - path: eval5/GR-E/item-item-recs.parquet
+      md5: 1c9950b575d90580f8f3e2c5524104cf
+      size: 15472588
+  eval-split-GR-I:
+    cmd: python -m scripts.split-ratings -d eval5 --min-ratings 10 --test-ratings
+      5 GR-I
+    deps:
+    - path: data/GR-I/ratings.parquet
+      md5: 2aefcacc130500cb9f8c88050bbcbb1b
+      size: 2917243446
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: scripts/split-ratings.py
+      md5: 83e164309e858c19cf929ddeecac9856
+      size: 2415
+    outs:
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+  eval-train-GR-I-user-user:
+    cmd: python -m scripts.train-model  --train-data eval5 GR-I user-user
+    deps:
+    - path: data/GR-I/ratings.parquet
+      md5: 2aefcacc130500cb9f8c88050bbcbb1b
+      size: 2917243446
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/GR-I/user-user.json
+      md5: 807351c5c2b16cd4abd294ad47553076
+      size: 77
+    outs:
+    - path: eval5/GR-I/user-user.model
+      md5: 6f17ba8cc39d98df581e49e24d3ec00b
+      size: 1463410617
+  GR-I-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-I user-user
+    deps:
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: a792a3cd97348b93729100e92040f3ff
+      size: 740035
+    - path: eval5/GR-I/user-user.model
+      md5: 51a6efd9d8c7ad642f05039fd4633170
+      size: 1430137638
+    - path: tuning/GR-I/user-user.json
+      md5: 807351c5c2b16cd4abd294ad47553076
+      size: 77
+    outs:
+    - path: eval5/GR-I/user-user-metrics.json
+      md5: 8ece64dfe856418b47ee16f8ed8fe251
+      size: 70
+    - path: eval5/GR-I/user-user-recs.parquet
+      md5: ef0d74a5169f8b16c9ae80b5ead995b6
+      size: 22767919
+  eval-train-GR-I-item-item:
+    cmd: python -m scripts.train-model  --train-data eval5 GR-I item-item
+    deps:
+    - path: data/GR-I/ratings.parquet
+      md5: 2aefcacc130500cb9f8c88050bbcbb1b
+      size: 2917243446
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/GR-I/item-item.json
+      md5: 747e95128ad3a909dcadd276c5f283f9
+      size: 67
+    outs:
+    - path: eval5/GR-I/item-item.model
+      md5: 50487b571e6d3010d86b6e219a99cb8d
+      size: 9548623201
+  GR-I-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-I item-item
+    deps:
+    - path: eval5/GR-I/item-item.model
+      md5: 7480383d484fe8d75517d700f54824a8
+      size: 6557572461
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: a792a3cd97348b93729100e92040f3ff
+      size: 740035
+    - path: tuning/GR-I/item-item.json
+      md5: 747e95128ad3a909dcadd276c5f283f9
+      size: 67
+    outs:
+    - path: eval5/GR-I/item-item-metrics.json
+      md5: 13d14529a65e22ae081d50ceb9ea984d
+      size: 70
+    - path: eval5/GR-I/item-item-recs.parquet
+      md5: bd421f0daa51e01eb9bc67cb687c60f2
+      size: 25598099
+  eval-train-GR-I-wrls:
+    cmd: python -m scripts.train-model  --train-data eval5 GR-I wrls
+    deps:
+    - path: data/GR-I/ratings.parquet
+      md5: 2aefcacc130500cb9f8c88050bbcbb1b
+      size: 2917243446
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/GR-I/wrls.json
+      md5: 8f65bb547a1b42a9d870b02d2612df0d
+      size: 118
+    outs:
+    - path: eval5/GR-I/wrls.model
+      md5: 5d5e336115ddbacf3d763082cfd81c4f
+      size: 4464467432
+  GR-I-wrls:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-I wrls
+    deps:
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: a792a3cd97348b93729100e92040f3ff
+      size: 740035
+    - path: eval5/GR-I/wrls.model
+      md5: d578cf57252956bfd1f475b4f9664be7
+      size: 3693005928
+    - path: tuning/GR-I/wrls.json
+      md5: 8f65bb547a1b42a9d870b02d2612df0d
+      size: 118
+    outs:
+    - path: eval5/GR-I/wrls-metrics.json
+      md5: 72333ef5b95d266089710a919d1c98f6
+      size: 72
+    - path: eval5/GR-I/wrls-recs.parquet
+      md5: 81574de40ad0a4025c7f49268a54730b
+      size: 27822721
+  eval-train-GR-I-bpr:
+    cmd: python -m scripts.train-model  --train-data eval5 GR-I bpr
+    deps:
+    - path: data/GR-I/ratings.parquet
+      md5: 2aefcacc130500cb9f8c88050bbcbb1b
+      size: 2917243446
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 95
+    - path: tuning/GR-I/bpr.json
+      md5: ac7ad0478388d83250529fc2f735bb98
+      size: 85
+    outs:
+    - path: eval5/GR-I/bpr.model
+      md5: ce00712a2208157f738d6994338eb73a
+      size: 2604146435
+  GR-I-bpr:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-I bpr
+    deps:
+    - path: eval5/GR-I/bpr.model
+      md5: 187b0174ff2a8b68e524fa6649c88e17
+      size: 2157594918
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: a792a3cd97348b93729100e92040f3ff
+      size: 740035
+    - path: tuning/GR-I/bpr.json
+      md5: ac7ad0478388d83250529fc2f735bb98
+      size: 85
+    outs:
+    - path: eval5/GR-I/bpr-metrics.json
+      md5: 259a3b3e557191e4ee31d6d9564f819c
+      size: 70
+    - path: eval5/GR-I/bpr-recs.parquet
+      md5: 283945bba9e248f4180b873dab06fc7b
+      size: 29295389
+  GR-I-pairwise:
+    cmd: python -m scripts.measure-eval-recs --pairwise -o eval5/GR-I/pairwise-metrics.csv
+      -d eval5 GR-I
+    deps:
+    - path: eval5/GR-I/bpr-recs.parquet
+      md5: e9901ed5341427f16fe25262ac669a4d
+      size: 2388482675
+    - path: eval5/GR-I/item-item-recs.parquet
+      md5: 24668772fd19192abc25dd3ffa69cff2
+      size: 631600641
+    - path: eval5/GR-I/user-user-recs.parquet
+      md5: 35b64c587bbd6c644b6270bb59fc02ca
+      size: 1959888136
+    - path: eval5/GR-I/wrls-recs.parquet
+      md5: c1d886b88dc36a1819ce31f91d053c71
+      size: 2463199877
+    outs:
+    - path: eval5/GR-I/pairwise-metrics.csv
+      md5: c0dc4148592b979597ba9bfa88ee467d
+      size: 657
+  GR-I-wrls-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 GR-I wrls
+    deps:
+    - path: eval5/GR-I/bpr.model
+      md5: ce00712a2208157f738d6994338eb73a
+      size: 2604146435
+    - path: eval5/GR-I/item-item.model
+      md5: 50487b571e6d3010d86b6e219a99cb8d
+      size: 9548623201
+    - path: eval5/GR-I/user-user.model
+      md5: 6f17ba8cc39d98df581e49e24d3ec00b
+      size: 1463410617
+    - path: eval5/GR-I/wrls.model
+      md5: 5d5e336115ddbacf3d763082cfd81c4f
+      size: 4464467432
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/GR-I/wrls-pairwise-metrics.json
+      md5: 26565419dc1421624f4a058b74325a30
+      size: 258
+  GR-I-item-item-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 GR-I item-item
+    deps:
+    - path: eval5/GR-I/bpr.model
+      md5: ce00712a2208157f738d6994338eb73a
+      size: 2604146435
+    - path: eval5/GR-I/item-item.model
+      md5: 50487b571e6d3010d86b6e219a99cb8d
+      size: 9548623201
+    - path: eval5/GR-I/user-user.model
+      md5: 6f17ba8cc39d98df581e49e24d3ec00b
+      size: 1463410617
+    - path: eval5/GR-I/wrls.model
+      md5: 5d5e336115ddbacf3d763082cfd81c4f
+      size: 4464467432
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/GR-I/item-item-pairwise-metrics.json
+      md5: be220cfebe1ee7735e0d2673d84af005
+      size: 258
+  GR-I-user-user-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 GR-I user-user
+    deps:
+    - path: eval5/GR-I/bpr.model
+      md5: ce00712a2208157f738d6994338eb73a
+      size: 2604146435
+    - path: eval5/GR-I/item-item.model
+      md5: 50487b571e6d3010d86b6e219a99cb8d
+      size: 9548623201
+    - path: eval5/GR-I/user-user.model
+      md5: 6f17ba8cc39d98df581e49e24d3ec00b
+      size: 1463410617
+    - path: eval5/GR-I/wrls.model
+      md5: 5d5e336115ddbacf3d763082cfd81c4f
+      size: 4464467432
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/GR-I/user-user-pairwise-metrics.json
+      md5: 2cbb4c54056f03ccbc09f0b52970b3e2
+      size: 257
+  GR-I-bpr-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 GR-I bpr
+    deps:
+    - path: eval5/GR-I/bpr.model
+      md5: ce00712a2208157f738d6994338eb73a
+      size: 2604146435
+    - path: eval5/GR-I/item-item.model
+      md5: 50487b571e6d3010d86b6e219a99cb8d
+      size: 9548623201
+    - path: eval5/GR-I/user-user.model
+      md5: 6f17ba8cc39d98df581e49e24d3ec00b
+      size: 1463410617
+    - path: eval5/GR-I/wrls.model
+      md5: 5d5e336115ddbacf3d763082cfd81c4f
+      size: 4464467432
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/GR-I/bpr-pairwise-metrics.json
+      md5: 2fe9fe54889c6827ca74617ca6f6ff0f
+      size: 258
+  GR-E-item-item-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 GR-E item-item
+    deps:
+    - path: eval5/GR-E/item-item.model
+      md5: 026632ca2c21ec2e1e0f6ec0457841ea
+      size: 2597977081
+    - path: eval5/GR-E/user-user.model
+      md5: ec2d9c443ef523a65d5f944b540ac202
+      size: 1146204058
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/GR-E/item-item-pairwise-metrics.json
+      md5: 3b94d8465d40472f86150a5c492b5e41
+      size: 257
+  AZ-user-user-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ user-user
+    deps:
+    - path: eval5/AZ/als.model
+      md5: 7a447e3a3ad9bd3d8e8aab64f808d0e0
+      size: 9830712560
+    - path: eval5/AZ/bpr-imp.model
+      md5: 4cad97cf6f478cf121bcc28ed5f4adbb
+      size: 287030054
+    - path: eval5/AZ/item-item-imp.model
+      md5: 8745962415126ae57a80c29a79d92c2b
+      size: 5514275144
+    - path: eval5/AZ/item-item.model
+      md5: 76c1de9624bedbc29ade6ac93051e985
+      size: 913041758
+    - path: eval5/AZ/user-user-imp.model
+      md5: 9399b8656b7ed2dc1c6c4e37f0985626
+      size: 164176881
+    - path: eval5/AZ/user-user.model
+      md5: d9ec2b7ddc8862bdb9113617d09ae473
+      size: 229886250
+    - path: eval5/AZ/wrls-imp.model
+      md5: c4fa2d4610a49313e87d32d35422e5d3
+      size: 6581958660
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/AZ/user-user-pairwise-metrics.json
+      md5: 904e3e5a2cf08c5f0ee2ca04fa020eb9
+      size: 257
+  BX-E-als-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-E als
+    deps:
+    - path: eval5/BX-E/als.model
+      md5: 338a0334c4628935c2e87a5ca8a63d41
+      size: 212915912
+    - path: eval5/BX-E/item-item.model
+      md5: 883b443ba0355d9bdfab18a9300a3125
+      size: 38740237
+    - path: eval5/BX-E/user-user.model
+      md5: 30fd5a71025b6e2fd2ccc7fdddc380f4
+      size: 5200398
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/BX-E/als-pairwise-metrics.json
+      md5: 6a2c3650e03a52549c5b48276f7583b8
+      size: 259
+  BX-I-user-user-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-I user-user
+    deps:
+    - path: eval5/BX-I/bpr.model
+      md5: 546d984a6c84215c612cf07c2f0f1312
+      size: 325778359
+    - path: eval5/BX-I/item-item.model
+      md5: fdd6e37b9a47a22844f1e002b09fdb74
+      size: 1221741314
+    - path: eval5/BX-I/user-user.model
+      md5: 3bdc0e85b14fb9614286de0de300c9c1
+      size: 8399679
+    - path: eval5/BX-I/wrls.model
+      md5: 2b1b975dcc9a41a3f5f0d7adaa0d973a
+      size: 592367071
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/BX-I/user-user-pairwise-metrics.json
+      md5: 816b454affdc711849de368ddb502a9f
+      size: 256
+  BX-E-item-item-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-E item-item
+    deps:
+    - path: eval5/BX-E/als.model
+      md5: 338a0334c4628935c2e87a5ca8a63d41
+      size: 212915912
+    - path: eval5/BX-E/item-item.model
+      md5: 883b443ba0355d9bdfab18a9300a3125
+      size: 38740237
+    - path: eval5/BX-E/user-user.model
+      md5: 30fd5a71025b6e2fd2ccc7fdddc380f4
+      size: 5200398
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/BX-E/item-item-pairwise-metrics.json
+      md5: 3148e482dd4a38efa7f78730f38a7635
+      size: 257
+  AZ-als-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ als
+    deps:
+    - path: eval5/AZ/als.model
+      md5: 7a447e3a3ad9bd3d8e8aab64f808d0e0
+      size: 9830712560
+    - path: eval5/AZ/bpr-imp.model
+      md5: 4cad97cf6f478cf121bcc28ed5f4adbb
+      size: 287030054
+    - path: eval5/AZ/item-item-imp.model
+      md5: 8745962415126ae57a80c29a79d92c2b
+      size: 5514275144
+    - path: eval5/AZ/item-item.model
+      md5: 76c1de9624bedbc29ade6ac93051e985
+      size: 913041758
+    - path: eval5/AZ/user-user-imp.model
+      md5: 9399b8656b7ed2dc1c6c4e37f0985626
+      size: 164176881
+    - path: eval5/AZ/user-user.model
+      md5: d9ec2b7ddc8862bdb9113617d09ae473
+      size: 229886250
+    - path: eval5/AZ/wrls-imp.model
+      md5: c4fa2d4610a49313e87d32d35422e5d3
+      size: 6581958660
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/AZ/als-pairwise-metrics.json
+      md5: 55cd3387c5cbe8e7d7d68a11e62b2abe
+      size: 259
+  BX-I-item-item-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-I item-item
+    deps:
+    - path: eval5/BX-I/bpr.model
+      md5: 546d984a6c84215c612cf07c2f0f1312
+      size: 325778359
+    - path: eval5/BX-I/item-item.model
+      md5: fdd6e37b9a47a22844f1e002b09fdb74
+      size: 1221741314
+    - path: eval5/BX-I/user-user.model
+      md5: 3bdc0e85b14fb9614286de0de300c9c1
+      size: 8399679
+    - path: eval5/BX-I/wrls.model
+      md5: 2b1b975dcc9a41a3f5f0d7adaa0d973a
+      size: 592367071
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/BX-I/item-item-pairwise-metrics.json
+      md5: 03afb3ace578e1459a91392ee7b9269f
+      size: 258
+  GR-E-user-user-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 GR-E user-user
+    deps:
+    - path: eval5/GR-E/item-item.model
+      md5: 026632ca2c21ec2e1e0f6ec0457841ea
+      size: 2597977081
+    - path: eval5/GR-E/user-user.model
+      md5: ec2d9c443ef523a65d5f944b540ac202
+      size: 1146204058
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/GR-E/user-user-pairwise-metrics.json
+      md5: fa34f2d3fc4124746d2cc434e594b697
+      size: 257
+  BX-I-wrls-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-I wrls
+    deps:
+    - path: eval5/BX-I/bpr.model
+      md5: 546d984a6c84215c612cf07c2f0f1312
+      size: 325778359
+    - path: eval5/BX-I/item-item.model
+      md5: fdd6e37b9a47a22844f1e002b09fdb74
+      size: 1221741314
+    - path: eval5/BX-I/user-user.model
+      md5: 3bdc0e85b14fb9614286de0de300c9c1
+      size: 8399679
+    - path: eval5/BX-I/wrls.model
+      md5: 2b1b975dcc9a41a3f5f0d7adaa0d973a
+      size: 592367071
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/BX-I/wrls-pairwise-metrics.json
+      md5: 5aa6d54745846a129b96df11a7a3baa5
+      size: 258
+  BX-I-bpr-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-I bpr
+    deps:
+    - path: eval5/BX-I/bpr.model
+      md5: 546d984a6c84215c612cf07c2f0f1312
+      size: 325778359
+    - path: eval5/BX-I/item-item.model
+      md5: fdd6e37b9a47a22844f1e002b09fdb74
+      size: 1221741314
+    - path: eval5/BX-I/user-user.model
+      md5: 3bdc0e85b14fb9614286de0de300c9c1
+      size: 8399679
+    - path: eval5/BX-I/wrls.model
+      md5: 2b1b975dcc9a41a3f5f0d7adaa0d973a
+      size: 592367071
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/BX-I/bpr-pairwise-metrics.json
+      md5: dacb073c26a4103e7f61cbbbe6e1f46d
+      size: 258
+  BX-E-user-user-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-E user-user
+    deps:
+    - path: eval5/BX-E/als.model
+      md5: 338a0334c4628935c2e87a5ca8a63d41
+      size: 212915912
+    - path: eval5/BX-E/item-item.model
+      md5: 883b443ba0355d9bdfab18a9300a3125
+      size: 38740237
+    - path: eval5/BX-E/user-user.model
+      md5: 30fd5a71025b6e2fd2ccc7fdddc380f4
+      size: 5200398
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/BX-E/user-user-pairwise-metrics.json
+      md5: c12d93de80ff3cf214d363f6b7dbcc5c
+      size: 257
+  AZ-user-user-imp-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ user-user-imp
+    deps:
+    - path: eval5/AZ/als.model
+      md5: 7a447e3a3ad9bd3d8e8aab64f808d0e0
+      size: 9830712560
+    - path: eval5/AZ/bpr-imp.model
+      md5: 4cad97cf6f478cf121bcc28ed5f4adbb
+      size: 287030054
+    - path: eval5/AZ/item-item-imp.model
+      md5: 8745962415126ae57a80c29a79d92c2b
+      size: 5514275144
+    - path: eval5/AZ/item-item.model
+      md5: 76c1de9624bedbc29ade6ac93051e985
+      size: 913041758
+    - path: eval5/AZ/user-user-imp.model
+      md5: 9399b8656b7ed2dc1c6c4e37f0985626
+      size: 164176881
+    - path: eval5/AZ/user-user.model
+      md5: d9ec2b7ddc8862bdb9113617d09ae473
+      size: 229886250
+    - path: eval5/AZ/wrls-imp.model
+      md5: c4fa2d4610a49313e87d32d35422e5d3
+      size: 6581958660
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/AZ/user-user-imp-pairwise-metrics.json
+      md5: bd510a5636c5673aa6636e41680431f7
+      size: 258
+  AZ-bpr-imp-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ bpr-imp
+    deps:
+    - path: eval5/AZ/als.model
+      md5: 7a447e3a3ad9bd3d8e8aab64f808d0e0
+      size: 9830712560
+    - path: eval5/AZ/bpr-imp.model
+      md5: 4cad97cf6f478cf121bcc28ed5f4adbb
+      size: 287030054
+    - path: eval5/AZ/item-item-imp.model
+      md5: 8745962415126ae57a80c29a79d92c2b
+      size: 5514275144
+    - path: eval5/AZ/item-item.model
+      md5: 76c1de9624bedbc29ade6ac93051e985
+      size: 913041758
+    - path: eval5/AZ/user-user-imp.model
+      md5: 9399b8656b7ed2dc1c6c4e37f0985626
+      size: 164176881
+    - path: eval5/AZ/user-user.model
+      md5: d9ec2b7ddc8862bdb9113617d09ae473
+      size: 229886250
+    - path: eval5/AZ/wrls-imp.model
+      md5: c4fa2d4610a49313e87d32d35422e5d3
+      size: 6581958660
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/AZ/bpr-imp-pairwise-metrics.json
+      md5: b0c133b6c5c1b2bc4a106e3a390bea5e
+      size: 257
+  AZ-item-item-imp-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ item-item-imp
+    deps:
+    - path: eval5/AZ/als.model
+      md5: 7a447e3a3ad9bd3d8e8aab64f808d0e0
+      size: 9830712560
+    - path: eval5/AZ/bpr-imp.model
+      md5: 4cad97cf6f478cf121bcc28ed5f4adbb
+      size: 287030054
+    - path: eval5/AZ/item-item-imp.model
+      md5: 8745962415126ae57a80c29a79d92c2b
+      size: 5514275144
+    - path: eval5/AZ/item-item.model
+      md5: 76c1de9624bedbc29ade6ac93051e985
+      size: 913041758
+    - path: eval5/AZ/user-user-imp.model
+      md5: 9399b8656b7ed2dc1c6c4e37f0985626
+      size: 164176881
+    - path: eval5/AZ/user-user.model
+      md5: d9ec2b7ddc8862bdb9113617d09ae473
+      size: 229886250
+    - path: eval5/AZ/wrls-imp.model
+      md5: c4fa2d4610a49313e87d32d35422e5d3
+      size: 6581958660
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/AZ/item-item-imp-pairwise-metrics.json
+      md5: 2a0e95ab64b0b22db31b299c81bd43c8
+      size: 257
+  AZ-wrls-imp-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ wrls-imp
+    deps:
+    - path: eval5/AZ/als.model
+      md5: 7a447e3a3ad9bd3d8e8aab64f808d0e0
+      size: 9830712560
+    - path: eval5/AZ/bpr-imp.model
+      md5: 4cad97cf6f478cf121bcc28ed5f4adbb
+      size: 287030054
+    - path: eval5/AZ/item-item-imp.model
+      md5: 8745962415126ae57a80c29a79d92c2b
+      size: 5514275144
+    - path: eval5/AZ/item-item.model
+      md5: 76c1de9624bedbc29ade6ac93051e985
+      size: 913041758
+    - path: eval5/AZ/user-user-imp.model
+      md5: 9399b8656b7ed2dc1c6c4e37f0985626
+      size: 164176881
+    - path: eval5/AZ/user-user.model
+      md5: d9ec2b7ddc8862bdb9113617d09ae473
+      size: 229886250
+    - path: eval5/AZ/wrls-imp.model
+      md5: c4fa2d4610a49313e87d32d35422e5d3
+      size: 6581958660
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/AZ/wrls-imp-pairwise-metrics.json
+      md5: ef5ac2afa0f7d576d5af4f58664a7075
+      size: 257
+  AZ-item-item-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ item-item
+    deps:
+    - path: eval5/AZ/als.model
+      md5: 7a447e3a3ad9bd3d8e8aab64f808d0e0
+      size: 9830712560
+    - path: eval5/AZ/bpr-imp.model
+      md5: 4cad97cf6f478cf121bcc28ed5f4adbb
+      size: 287030054
+    - path: eval5/AZ/item-item-imp.model
+      md5: 8745962415126ae57a80c29a79d92c2b
+      size: 5514275144
+    - path: eval5/AZ/item-item.model
+      md5: 76c1de9624bedbc29ade6ac93051e985
+      size: 913041758
+    - path: eval5/AZ/user-user-imp.model
+      md5: 9399b8656b7ed2dc1c6c4e37f0985626
+      size: 164176881
+    - path: eval5/AZ/user-user.model
+      md5: d9ec2b7ddc8862bdb9113617d09ae473
+      size: 229886250
+    - path: eval5/AZ/wrls-imp.model
+      md5: c4fa2d4610a49313e87d32d35422e5d3
+      size: 6581958660
+    - path: scripts/measure-model-pairwise.py
+      md5: 9104612dc87a473e8cb9ee1c2a437f12
+      size: 7003
+    outs:
+    - path: eval5/AZ/item-item-pairwise-metrics.json
+      md5: 9ad7cf7145704c1a99c05f06f2ca52e3
+      size: 258
+  group-rel-GR-I:
+    cmd: python -m scripts.group-relevance -d eval5 --test-ratings GR-I
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    outs:
+    - path: eval5/GR-I/test-ratings-group-relevance.csv.gz
+      md5: 6fa4972131616ff74c980a6818bc55a0
+      size: 25640
+  GR-I-bpr-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 GR-I bpr
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/GR-I/bpr.model
+      md5: ce00712a2208157f738d6994338eb73a
+      size: 2604146435
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    outs:
+    - path: eval5/GR-I/bpr-group-relevance.csv.gz
+      md5: 9fdf0ff12f9081103f1d3222b477d676
+      size: 205248
+  GR-I-item-item-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 GR-I item-item
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/GR-I/item-item.model
+      md5: 50487b571e6d3010d86b6e219a99cb8d
+      size: 9548623201
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    outs:
+    - path: eval5/GR-I/item-item-group-relevance.csv.gz
+      md5: feb458bd181e4437f0b14c19eea479fb
+      size: 308860
+  GR-I-user-user-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 GR-I user-user
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    - path: eval5/GR-I/user-user.model
+      md5: 6f17ba8cc39d98df581e49e24d3ec00b
+      size: 1463410617
+    outs:
+    - path: eval5/GR-I/user-user-group-relevance.csv.gz
+      md5: 28e459b3a1289644d473bd6b024ed250
+      size: 309433
+  GR-I-wrls-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 GR-I wrls
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    - path: eval5/GR-I/wrls.model
+      md5: 5d5e336115ddbacf3d763082cfd81c4f
+      size: 4464467432
+    outs:
+    - path: eval5/GR-I/wrls-group-relevance.csv.gz
+      md5: 9972d1e713ebedb50dc8e5383f629cd2
+      size: 308617
+  AZ-item-item-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ item-item
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/AZ/item-item.model
+      md5: 76c1de9624bedbc29ade6ac93051e985
+      size: 913041758
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    outs:
+    - path: eval5/AZ/item-item-group-relevance.csv.gz
+      md5: 167c766ed3f83d993c6a5458ed9130e2
+      size: 329565
+  BX-E-als-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-E als
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/BX-E/als.model
+      md5: 338a0334c4628935c2e87a5ca8a63d41
+      size: 212915912
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: 1b6b9cb417b57c95f248d1e9ee8a2a2e
+      size: 353759
+    outs:
+    - path: eval5/BX-E/als-group-relevance.csv.gz
+      md5: 6f6a706b9e3268d291696caa1cab8507
+      size: 344471
+  AZ-user-user-imp-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ user-user-imp
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: eval5/AZ/user-user-imp.model
+      md5: 9399b8656b7ed2dc1c6c4e37f0985626
+      size: 164176881
+    outs:
+    - path: eval5/AZ/user-user-imp-group-relevance.csv.gz
+      md5: 3b45a88d2d9915bbe36ea3affb91f66f
+      size: 347076
+  BX-I-item-item-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-I item-item
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/BX-I/item-item.model
+      md5: fdd6e37b9a47a22844f1e002b09fdb74
+      size: 1221741314
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    outs:
+    - path: eval5/BX-I/item-item-group-relevance.csv.gz
+      md5: 70edc324a839e70c2056ecaf46cfbd9a
+      size: 345412
+  BX-I-bpr-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-I bpr
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/BX-I/bpr.model
+      md5: 546d984a6c84215c612cf07c2f0f1312
+      size: 325778359
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    outs:
+    - path: eval5/BX-I/bpr-group-relevance.csv.gz
+      md5: 3de4a2db1b5e40054a53487a518c5a5a
+      size: 241438
+  AZ-user-user-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ user-user
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: eval5/AZ/user-user.model
+      md5: d9ec2b7ddc8862bdb9113617d09ae473
+      size: 229886250
+    outs:
+    - path: eval5/AZ/user-user-group-relevance.csv.gz
+      md5: 82847d9630582d1f11931c33df8e7772
+      size: 256659
+  AZ-bpr-imp-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ bpr-imp
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/AZ/bpr-imp.model
+      md5: 4cad97cf6f478cf121bcc28ed5f4adbb
+      size: 287030054
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    outs:
+    - path: eval5/AZ/bpr-imp-group-relevance.csv.gz
+      md5: 6dd5dca125db70e7cf4c18d43f9a02fe
+      size: 245376
+  GR-E-item-item-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 GR-E item-item
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/GR-E/item-item.model
+      md5: 026632ca2c21ec2e1e0f6ec0457841ea
+      size: 2597977081
+    - path: eval5/GR-E/test-ratings.parquet
+      md5: cba9883217271dbab2fddb6c3a5789e7
+      size: 635140
+    outs:
+    - path: eval5/GR-E/item-item-group-relevance.csv.gz
+      md5: e0381653f389e3dee7c95b15adbd74a3
+      size: 299454
+  BX-I-user-user-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-I user-user
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    - path: eval5/BX-I/user-user.model
+      md5: 3bdc0e85b14fb9614286de0de300c9c1
+      size: 8399679
+    outs:
+    - path: eval5/BX-I/user-user-group-relevance.csv.gz
+      md5: 1412a7374602293f583e2c7202b4651e
+      size: 340733
+  GR-E-user-user-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 GR-E user-user
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/GR-E/test-ratings.parquet
+      md5: cba9883217271dbab2fddb6c3a5789e7
+      size: 635140
+    - path: eval5/GR-E/user-user.model
+      md5: ec2d9c443ef523a65d5f944b540ac202
+      size: 1146204058
+    outs:
+    - path: eval5/GR-E/user-user-group-relevance.csv.gz
+      md5: 9ceed1289b3293e73de3d6002951692e
+      size: 298188
+  AZ-item-item-imp-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ item-item-imp
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/AZ/item-item-imp.model
+      md5: 8745962415126ae57a80c29a79d92c2b
+      size: 5514275144
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    outs:
+    - path: eval5/AZ/item-item-imp-group-relevance.csv.gz
+      md5: 641b0fb64b5cfa6f900fecc7dc2dde77
+      size: 346498
+  BX-E-user-user-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-E user-user
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: 1b6b9cb417b57c95f248d1e9ee8a2a2e
+      size: 353759
+    - path: eval5/BX-E/user-user.model
+      md5: 30fd5a71025b6e2fd2ccc7fdddc380f4
+      size: 5200398
+    outs:
+    - path: eval5/BX-E/user-user-group-relevance.csv.gz
+      md5: 071f454b29c3aa5234a9a62d62d135e0
+      size: 307127
+  BX-I-wrls-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-I wrls
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    - path: eval5/BX-I/wrls.model
+      md5: 2b1b975dcc9a41a3f5f0d7adaa0d973a
+      size: 592367071
+    outs:
+    - path: eval5/BX-I/wrls-group-relevance.csv.gz
+      md5: 3558eca44e14002ef28dfc9b22e8f18c
+      size: 345624
+  AZ-wrls-imp-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ wrls-imp
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: eval5/AZ/wrls-imp.model
+      md5: c4fa2d4610a49313e87d32d35422e5d3
+      size: 6581958660
+    outs:
+    - path: eval5/AZ/wrls-imp-group-relevance.csv.gz
+      md5: beac86ec7e4e67d31e1c946426cb5856
+      size: 347755
+  AZ-als-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ als
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/AZ/als.model
+      md5: 7a447e3a3ad9bd3d8e8aab64f808d0e0
+      size: 9830712560
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    outs:
+    - path: eval5/AZ/als-group-relevance.csv.gz
+      md5: a8304f08f50c78b8e7820b3062336c0b
+      size: 342456
+  BX-E-item-item-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-E item-item
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/BX-E/item-item.model
+      md5: 883b443ba0355d9bdfab18a9300a3125
+      size: 38740237
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: 1b6b9cb417b57c95f248d1e9ee8a2a2e
+      size: 353759
+    outs:
+    - path: eval5/BX-E/item-item-group-relevance.csv.gz
+      md5: c0d1871bbf0d8e0c3241a86c7a149ece
+      size: 340885
+  group-rel-GR-E:
+    cmd: python -m scripts.group-relevance -d eval5 --test-ratings GR-E
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/GR-E/test-ratings.parquet
+      md5: cba9883217271dbab2fddb6c3a5789e7
+      size: 635140
+    outs:
+    - path: eval5/GR-E/test-ratings-group-relevance.csv.gz
+      md5: 1182a4f4e13edf820b7dc00ba363e8df
+      size: 33433
+  group-rel-BX-I:
+    cmd: python -m scripts.group-relevance -d eval5 --test-ratings BX-I
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    outs:
+    - path: eval5/BX-I/test-ratings-group-relevance.csv.gz
+      md5: 55a4f494adc9543af7dccb7809f25676
+      size: 24323
+  group-rel-BX-E:
+    cmd: python -m scripts.group-relevance -d eval5 --test-ratings BX-E
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: 1b6b9cb417b57c95f248d1e9ee8a2a2e
+      size: 353759
+    outs:
+    - path: eval5/BX-E/test-ratings-group-relevance.csv.gz
+      md5: d57a6bf90cd671b9907080e506709793
+      size: 34969
+  group-rel-AZ:
+    cmd: python -m scripts.group-relevance -d eval5 --test-ratings AZ
+    deps:
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    outs:
+    - path: eval5/AZ/test-ratings-group-relevance.csv.gz
+      md5: 9ca505c49b789782c6017148153a0a29
+      size: 36384
+  measure-AZ-item-item-imp:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 --drop-ratings -N item-item-imp
+      --pretrained -n 1000 AZ item-item
+    deps:
+    - path: eval5/AZ/item-item-imp.model
+      md5: 8745962415126ae57a80c29a79d92c2b
+      size: 5514275144
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: tuning/AZ/item-item-imp.json
+      md5: 19b2a99a6a00c1320ca5d46e5412dca4
+      size: 79
+    outs:
+    - path: eval5/AZ/item-item-imp-metrics.json
+      md5: 722c249fb1c28918110cecd7dd3f7a61
+      size: 83
+    - path: eval5/AZ/item-item-imp-recs.parquet
+      md5: cc6cbb22c87674f2fd21e996d53e7a82
+      size: 15922406
+  measure-GR-I-wrls:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-I wrls
+    deps:
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    - path: eval5/GR-I/wrls.model
+      md5: 5d5e336115ddbacf3d763082cfd81c4f
+      size: 4464467432
+    - path: tuning/GR-I/wrls.json
+      md5: 8f65bb547a1b42a9d870b02d2612df0d
+      size: 118
+    outs:
+    - path: eval5/GR-I/wrls-metrics.json
+      md5: fcfab5c7889801b2c256fc7a679ec50c
+      size: 83
+    - path: eval5/GR-I/wrls-recs.parquet
+      md5: 67b644d09d39a4103c61bee1cdae1709
+      size: 28060040
+  measure-AZ-wrls-imp:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 --drop-ratings -N wrls-imp --pretrained
+      -n 1000 AZ wrls
+    deps:
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: eval5/AZ/wrls-imp.model
+      md5: c4fa2d4610a49313e87d32d35422e5d3
+      size: 6581958660
+    - path: tuning/AZ/wrls-imp.json
+      md5: b59e14500a3f30cc28307adccc2f3593
+      size: 78
+    outs:
+    - path: eval5/AZ/wrls-imp-metrics.json
+      md5: 1de80368902d5b0304623bcb1bc73dd7
+      size: 72
+    - path: eval5/AZ/wrls-imp-recs.parquet
+      md5: bb81c9f5315fbf1ad1342cf1164414a5
+      size: 27725698
+  measure-AZ-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 AZ item-item
+    deps:
+    - path: eval5/AZ/item-item.model
+      md5: 76c1de9624bedbc29ade6ac93051e985
+      size: 913041758
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: tuning/AZ/item-item.json
+      md5: 3f3a14a85d0020ead808622c55060a0a
+      size: 63
+    outs:
+    - path: eval5/AZ/item-item-metrics.json
+      md5: d99cff7d8dac6c8d6501751c0ad202bd
+      size: 87
+    - path: eval5/AZ/item-item-recs.parquet
+      md5: 781593dbe58aed0ce5ed23402926cce2
+      size: 10682372
+  measure-BX-I-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-I user-user
+    deps:
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    - path: eval5/BX-I/user-user.model
+      md5: 3bdc0e85b14fb9614286de0de300c9c1
+      size: 8399679
+    - path: tuning/BX-I/user-user.json
+      md5: 7abdbec2bcc88fe50f6871f780aa98be
+      size: 80
+    outs:
+    - path: eval5/BX-I/user-user-metrics.json
+      md5: 5e61fcf78e3d6aaaaa2c7c296aac758a
+      size: 71
+    - path: eval5/BX-I/user-user-recs.parquet
+      md5: 82d2219e85aa7b483970e3c1e3a7a316
+      size: 18020744
+  measure-GR-I-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-I user-user
+    deps:
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    - path: eval5/GR-I/user-user.model
+      md5: 6f17ba8cc39d98df581e49e24d3ec00b
+      size: 1463410617
+    - path: tuning/GR-I/user-user.json
+      md5: 807351c5c2b16cd4abd294ad47553076
+      size: 77
+    outs:
+    - path: eval5/GR-I/user-user-metrics.json
+      md5: 6bfa6fdad1f6ef9fa0159b07bf6ee655
+      size: 71
+    - path: eval5/GR-I/user-user-recs.parquet
+      md5: 1bddbb62762f83e91ca33b1e0993956b
+      size: 23199919
+  measure-BX-E-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-E item-item
+    deps:
+    - path: eval5/BX-E/item-item.model
+      md5: 883b443ba0355d9bdfab18a9300a3125
+      size: 38740237
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: 1b6b9cb417b57c95f248d1e9ee8a2a2e
+      size: 353759
+    - path: tuning/BX-E/item-item.json
+      md5: 0b292e8423a99c94ef9668a6575c5a82
+      size: 81
+    outs:
+    - path: eval5/BX-E/item-item-metrics.json
+      md5: d633333ba4558ba91f937f93d05c0aca
+      size: 75
+    - path: eval5/BX-E/item-item-recs.parquet
+      md5: bd7b29cbc3242392e434439cffb16cdf
+      size: 9731832
+  measure-BX-I-wrls:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-I wrls
+    deps:
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    - path: eval5/BX-I/wrls.model
+      md5: 2b1b975dcc9a41a3f5f0d7adaa0d973a
+      size: 592367071
+    - path: tuning/BX-I/wrls.json
+      md5: 0a1584ec794cd8623d8b977882d7dd92
+      size: 120
+    outs:
+    - path: eval5/BX-I/wrls-metrics.json
+      md5: ab9d4ec40734d44f1d59adad040b85ca
+      size: 72
+    - path: eval5/BX-I/wrls-recs.parquet
+      md5: 3db3147a54ba7ea3533452d11d84fc23
+      size: 24559527
+  measure-AZ-user-user-imp:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 --drop-ratings -N user-user-imp
+      --pretrained -n 1000 AZ user-user
+    deps:
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: eval5/AZ/user-user-imp.model
+      md5: 9399b8656b7ed2dc1c6c4e37f0985626
+      size: 164176881
+    - path: tuning/AZ/user-user-imp.json
+      md5: a942d231c1ce93fc7900fe2f57af868d
+      size: 79
+    outs:
+    - path: eval5/AZ/user-user-imp-metrics.json
+      md5: 4eec2d2b2a27b17b4476bfec751cc60e
+      size: 83
+    - path: eval5/AZ/user-user-imp-recs.parquet
+      md5: bc3617577faece0a5aca9242fc98a83d
+      size: 25756407
+  measure-GR-I-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-I item-item
+    deps:
+    - path: eval5/GR-I/item-item.model
+      md5: 50487b571e6d3010d86b6e219a99cb8d
+      size: 9548623201
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    - path: tuning/GR-I/item-item.json
+      md5: 747e95128ad3a909dcadd276c5f283f9
+      size: 67
+    outs:
+    - path: eval5/GR-I/item-item-metrics.json
+      md5: 6761a963150b7e0c577e0c90c21ac44d
+      size: 72
+    - path: eval5/GR-I/item-item-recs.parquet
+      md5: 9839d5f5af7e7e398a8ddc818dc524bb
+      size: 25736461
+  measure-BX-E-als:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-E als
+    deps:
+    - path: eval5/BX-E/als.model
+      md5: 338a0334c4628935c2e87a5ca8a63d41
+      size: 212915912
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: 1b6b9cb417b57c95f248d1e9ee8a2a2e
+      size: 353759
+    - path: tuning/BX-E/als.json
+      md5: ff7679dcb4491c12031522c4cb3ce0f8
+      size: 117
+    outs:
+    - path: eval5/BX-E/als-metrics.json
+      md5: 77400d3b76dc3dbdcc6b6d616e4d2bbe
+      size: 85
+    - path: eval5/BX-E/als-recs.parquet
+      md5: e5b0f4eae0d643104d057fad5c8f24cd
+      size: 8202244
+  measure-BX-I-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-I item-item
+    deps:
+    - path: eval5/BX-I/item-item.model
+      md5: fdd6e37b9a47a22844f1e002b09fdb74
+      size: 1221741314
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    - path: tuning/BX-I/item-item.json
+      md5: 309f9ff49e57efa47e2e62016ab20333
+      size: 79
+    outs:
+    - path: eval5/BX-I/item-item-metrics.json
+      md5: c7a83f9eaa737efc22e48210f523e7de
+      size: 84
+    - path: eval5/BX-I/item-item-recs.parquet
+      md5: a4243830659e3259e34daea0c64be31c
+      size: 9389544
+  measure-GR-I-bpr:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-I bpr
+    deps:
+    - path: eval5/GR-I/bpr.model
+      md5: ce00712a2208157f738d6994338eb73a
+      size: 2604146435
+    - path: eval5/GR-I/test-ratings.parquet
+      md5: 778144ba52f24c5330a17418d4e458c4
+      size: 638533
+    - path: tuning/GR-I/bpr.json
+      md5: ac7ad0478388d83250529fc2f735bb98
+      size: 85
+    outs:
+    - path: eval5/GR-I/bpr-metrics.json
+      md5: 57a05f9f01d1d0d00d4d1f16a1985bb1
+      size: 70
+    - path: eval5/GR-I/bpr-recs.parquet
+      md5: 59ea22e530259737f424064b28215ff3
+      size: 30683617
+  measure-GR-E-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-E user-user
+    deps:
+    - path: eval5/GR-E/test-ratings.parquet
+      md5: cba9883217271dbab2fddb6c3a5789e7
+      size: 635140
+    - path: eval5/GR-E/user-user.model
+      md5: ec2d9c443ef523a65d5f944b540ac202
+      size: 1146204058
+    - path: tuning/GR-E/user-user.json
+      md5: 81425f3982937995f723534b6c247727
+      size: 78
+    outs:
+    - path: eval5/GR-E/user-user-metrics.json
+      md5: 12b6e2e1b3d5400ef8aab0e8f60cc9c2
+      size: 88
+    - path: eval5/GR-E/user-user-recs.parquet
+      md5: 2a22097e5d602ae6db42395d5c56d25b
+      size: 17182173
+  measure-AZ-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 AZ user-user
+    deps:
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: eval5/AZ/user-user.model
+      md5: d9ec2b7ddc8862bdb9113617d09ae473
+      size: 229886250
+    - path: tuning/AZ/user-user.json
+      md5: cdf7fa82dbcb7bb596e8098f3f239834
+      size: 80
+    outs:
+    - path: eval5/AZ/user-user-metrics.json
+      md5: 7ccaa9f2c2d576f0c0a66d006e7ebb99
+      size: 76
+    - path: eval5/AZ/user-user-recs.parquet
+      md5: 33299ccc781715095269801b40367ab7
+      size: 4448423
+  measure-AZ-bpr-imp:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 --drop-ratings -N bpr-imp --pretrained
+      -n 1000 AZ bpr
+    deps:
+    - path: eval5/AZ/bpr-imp.model
+      md5: 4cad97cf6f478cf121bcc28ed5f4adbb
+      size: 287030054
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: tuning/AZ/bpr-imp.json
+      md5: 4fb124217be60caa17ebe3e02ef33d4f
+      size: 102
+    outs:
+    - path: eval5/AZ/bpr-imp-metrics.json
+      md5: d970aaf36a52f85564fa8f583869b083
+      size: 74
+    - path: eval5/AZ/bpr-imp-recs.parquet
+      md5: bf7350a9bb82f5c22d7d944c4ec7b8da
+      size: 24341935
+  measure-BX-I-bpr:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-I bpr
+    deps:
+    - path: eval5/BX-I/bpr.model
+      md5: 546d984a6c84215c612cf07c2f0f1312
+      size: 325778359
+    - path: eval5/BX-I/test-ratings.parquet
+      md5: ff2b53eb29290e0caada818452c7b4b6
+      size: 344100
+    - path: tuning/BX-I/bpr.json
+      md5: 208fb35169f8376a4faee070b19e2e30
+      size: 101
+    outs:
+    - path: eval5/BX-I/bpr-metrics.json
+      md5: fbeaa25f5c516ef65143bd733aaf20bf
+      size: 85
+    - path: eval5/BX-I/bpr-recs.parquet
+      md5: 251a2bca9ece2fa3037cb98b1aa6091d
+      size: 25720601
+  measure-AZ-als:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 AZ als
+    deps:
+    - path: eval5/AZ/als.model
+      md5: 7a447e3a3ad9bd3d8e8aab64f808d0e0
+      size: 9830712560
+    - path: eval5/AZ/test-ratings.parquet
+      md5: 04115a5c78e7990ecff78e490b473e12
+      size: 518509
+    - path: tuning/AZ/als.json
+      md5: c096c581c6cb187328a13b93afe9b288
+      size: 121
+    outs:
+    - path: eval5/AZ/als-metrics.json
+      md5: 872be36d7648fb63baf4a0ea5bab1e38
+      size: 74
+    - path: eval5/AZ/als-recs.parquet
+      md5: 905c9886120d8dca45415762789b4e6e
+      size: 21573748
+  measure-GR-E-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-E item-item
+    deps:
+    - path: eval5/GR-E/item-item.model
+      md5: 026632ca2c21ec2e1e0f6ec0457841ea
+      size: 2597977081
+    - path: eval5/GR-E/test-ratings.parquet
+      md5: cba9883217271dbab2fddb6c3a5789e7
+      size: 635140
+    - path: tuning/GR-E/item-item.json
+      md5: 75e06020ba965a8bb7a75d1f379e113a
+      size: 77
+    outs:
+    - path: eval5/GR-E/item-item-metrics.json
+      md5: 17991d05851a14a0931f1539f372ab2c
+      size: 72
+    - path: eval5/GR-E/item-item-recs.parquet
+      md5: a8c7e15afa558dd4cb60b8e4c5af94e7
+      size: 17664974
+  measure-BX-E-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-E user-user
+    deps:
+    - path: eval5/BX-E/test-ratings.parquet
+      md5: 1b6b9cb417b57c95f248d1e9ee8a2a2e
+      size: 353759
+    - path: eval5/BX-E/user-user.model
+      md5: 30fd5a71025b6e2fd2ccc7fdddc380f4
+      size: 5200398
+    - path: tuning/BX-E/user-user.json
+      md5: 50fd40f0ceef51a4e3e529f84bdce15b
+      size: 80
+    outs:
+    - path: eval5/BX-E/user-user-metrics.json
+      md5: 8dc3e0626d088a59eda1b33470dba536
+      size: 90
+    - path: eval5/BX-E/user-user-recs.parquet
+      md5: a70f4a5b02f55c2241a7fc47a313a16a
+      size: 5593675
+  aggregate:
+    cmd: python -m scripts.aggregate --rec-perf -d eval5
+    deps:
+    - path: eval/AZ/als-metrics.json
+      md5: 5f1e012917c321392d7de4ca6d69c6d6
+      size: 75
+    - path: eval/AZ/bpr-imp-metrics.json
+      md5: 4036d7d4293002871c423625344319ef
+      size: 71
+    - path: eval/AZ/item-item-imp-metrics.json
+      md5: 0ff2fd58eb9c1aea7e2e4fd414acdd4c
+      size: 72
+    - path: eval/AZ/item-item-metrics.json
+      md5: 1411eaafc8af77f0b9e00fb8553e23da
+      size: 72
+    - path: eval/AZ/user-user-imp-metrics.json
+      md5: 3b41a9ffa4801d1f24abc0196c6a54fc
+      size: 70
+    - path: eval/AZ/user-user-metrics.json
+      md5: e6855f31b47b3966f35274e179b7f05d
+      size: 76
+    - path: eval/AZ/wrls-imp-metrics.json
+      md5: 28365c5e5fdd764cf35ea328ff2c10ef
+      size: 72
+    - path: eval/BX-E/als-metrics.json
+      md5: a58ca21745540a790452b6370c07ef76
+      size: 72
+    - path: eval/BX-E/item-item-metrics.json
+      md5: 4055ca4b1e49e4807551e566f7decd86
+      size: 74
+    - path: eval/BX-E/user-user-metrics.json
+      md5: e42cd31aa72b46bd266da7a4467af4ad
+      size: 76
+    - path: eval/BX-I/bpr-metrics.json
+      md5: 07e2446d4515fbc1f653ff6153fca0d7
+      size: 72
+    - path: eval/BX-I/item-item-metrics.json
+      md5: b0ac16528d993fd760c103fe15c1a1ab
+      size: 72
+    - path: eval/BX-I/user-user-metrics.json
+      md5: 6a1eb6be64381613402da3297a25a8de
+      size: 70
+    - path: eval/BX-I/wrls-metrics.json
+      md5: 96135fd29364510eb2aac6c194d0930e
+      size: 70
+    - path: eval/GR-E/item-item-metrics.json
+      md5: 0641a1705c23dfe188dc1ad3a94f3416
+      size: 72
+    - path: eval/GR-E/user-user-metrics.json
+      md5: c34547c49d65d35158a761eabaf78a75
+      size: 76
+    - path: eval/GR-I/bpr-metrics.json
+      md5: 4d7908ed041d3ab43f37c54ab2ee9a89
+      size: 72
+    - path: eval/GR-I/item-item-metrics.json
+      md5: 1971cb969265ed3153de6115bfa72f4b
+      size: 70
+    - path: eval/GR-I/user-user-metrics.json
+      md5: 088a14c838828a982d449d29fa977904
+      size: 70
+    - path: eval/GR-I/wrls-metrics.json
+      md5: ffd2374463512a9ba30465c4944307b0
+      size: 71
+    outs:
+    - path: eval5/rec-perf.csv
+      md5: 9e61c7b84f5e721dc9d5aafcb37fc5eb
+      size: 1374

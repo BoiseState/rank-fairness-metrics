@@ -1,0 +1,12 @@
+md5: 9b90a5a3039a23eb37134d4b292ef8b8
+frozen: true
+deps:
+- path: az2014/az-cluster-ratings.parquet
+  repo:
+    url: https://github.com/BoiseState/ol-processing-tools.git
+    rev_lock: de599c48772897348a79c2e8605b566392d07caa
+    rev: master
+outs:
+- md5: 34b85564594270315214de1e36d5a6e8
+  size: 302362488
+  path: ratings.parquet

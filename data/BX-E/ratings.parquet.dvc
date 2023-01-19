@@ -1,0 +1,12 @@
+md5: a304caef553a149f54328e3514128f2f
+frozen: true
+deps:
+- path: bx/bx-cluster-ratings.parquet
+  repo:
+    url: https://github.com/BoiseState/ol-processing-tools.git
+    rev_lock: de599c48772897348a79c2e8605b566392d07caa
+    rev: master
+outs:
+- md5: cfc5f8e674cadee8cd048e933df1ba6e
+  size: 3043969
+  path: ratings.parquet

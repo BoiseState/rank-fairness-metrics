@@ -1,0 +1,87 @@
+# Generated from dvc.yaml.in. Do not edit directly.
+stages:
+
+  sample-AZ:
+    wdir: ..
+    cmd: python -m scripts.sample-users AZ
+    deps:
+    - random.toml
+    - scripts/sample-users.py
+    - data/cluster-genders.parquet
+    - data/AZ/ratings.parquet
+    outs:
+    - data/AZ/sample-users.csv
+    - data/AZ/sample-ratings.csv
+    - data/AZ/sample-stats.json
+
+  sample-BX-E:
+    wdir: ..
+    cmd: python -m scripts.sample-users BX-E
+    deps:
+    - random.toml
+    - scripts/sample-users.py
+    - data/cluster-genders.parquet
+    - data/BX-E/ratings.parquet
+    outs:
+    - data/BX-E/sample-users.csv
+    - data/BX-E/sample-ratings.csv
+    - data/BX-E/sample-stats.json
+
+  sample-BX-I:
+    wdir: ..
+    cmd: python -m scripts.sample-users BX-I
+    deps:
+    - random.toml
+    - scripts/sample-users.py
+    - data/cluster-genders.parquet
+    - data/BX-I/ratings.parquet
+    outs:
+    - data/BX-I/sample-users.csv
+    - data/BX-I/sample-ratings.csv
+    - data/BX-I/sample-stats.json
+
+  sample-GR-E:
+    wdir: ..
+    cmd: python -m scripts.sample-users GR-E
+    deps:
+    - random.toml
+    - scripts/sample-users.py
+    - data/cluster-genders.parquet
+    - data/GR-E/ratings.parquet
+    outs:
+    - data/GR-E/sample-users.csv
+    - data/GR-E/sample-ratings.csv
+    - data/GR-E/sample-stats.json
+
+  sample-GR-I:
+    wdir: ..
+    cmd: python -m scripts.sample-users GR-I
+    deps:
+    - random.toml
+    - scripts/sample-users.py
+    - data/cluster-genders.parquet
+    - data/GR-I/ratings.parquet
+    outs:
+    - data/GR-I/sample-users.csv
+    - data/GR-I/sample-ratings.csv
+    - data/GR-I/sample-stats.json
+
+
+  sample:
+    cmd: python -m scripts.aggregate --users
+    wdir: ..
+    deps:
+    - data/AZ/sample-users.csv
+    - data/AZ/sample-ratings.csv
+    - data/BX-E/sample-users.csv
+    - data/BX-E/sample-ratings.csv
+    - data/BX-I/sample-users.csv
+    - data/BX-I/sample-ratings.csv
+    - data/GR-E/sample-users.csv
+    - data/GR-E/sample-ratings.csv
+    - data/GR-I/sample-users.csv
+    - data/GR-I/sample-ratings.csv
+    
+    outs:
+    - data/study-users.csv
+    - data/study-ratings.csv

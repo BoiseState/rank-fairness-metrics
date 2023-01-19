@@ -1,0 +1,5 @@
+outs:
+- md5: b301e669d2ea58b337f26c4772e08e7d.dir
+  size: 57574425
+  nfiles: 66
+  path: trec2020-fair-archive

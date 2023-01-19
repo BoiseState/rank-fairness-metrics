@@ -1,0 +1,12 @@
+md5: b61e340dc747283c9d3fdd472d6e44cd
+frozen: true
+deps:
+- path: loc-mds/loc-clusters.parquet
+  repo:
+    url: https://github.com/BoiseState/ol-processing-tools.git
+    rev_lock: de599c48772897348a79c2e8605b566392d07caa
+    rev: master
+outs:
+- md5: 21d39f57070e0bf8de0d37ab58c6119d
+  size: 35727960
+  path: loc-clusters.parquet

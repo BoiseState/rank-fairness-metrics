@@ -1,0 +1,12 @@
+md5: d85b9b74c27bdc5406ee7d6d3713728a
+frozen: true
+deps:
+- path: book-links/cluster-hashes.parquet
+  repo:
+    url: https://github.com/BoiseState/ol-processing-tools.git
+    rev_lock: 0d1625c68e137403f6c7f3f6d9b996edeed39e58
+    rev: master
+outs:
+- md5: d7e7c6536ced2dfb568f0c0e3aad30f9
+  size: 269773591
+  path: cluster-hashes.parquet

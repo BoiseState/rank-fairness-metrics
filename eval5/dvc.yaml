@@ -1,0 +1,1150 @@
+# Generated from dvc.yaml.in. Do not edit directly.
+stages:
+
+  eval-split-AZ:
+    cmd: python -m scripts.split-ratings -d eval5 --min-ratings 10 --test-ratings 5 AZ
+    deps:
+    - random.toml
+    - scripts/split-ratings.py
+    - data/AZ/ratings.parquet
+    outs:
+    - eval5/AZ/test-ratings.parquet
+    wdir: ..
+
+  group-rel-AZ:
+    cmd: python -m scripts.group-relevance -d eval5 --test-ratings AZ
+    wdir: ..
+    deps:
+    - eval5/AZ/test-ratings.parquet
+    - data/cluster-genders.parquet
+    outs:
+    - eval5/AZ/test-ratings-group-relevance.csv.gz
+
+  
+  
+  
+  
+  
+
+  eval-train-AZ-user-user:
+    cmd: python -m scripts.train-model  --train-data eval5 AZ user-user
+    deps:
+    - random.toml
+    - tuning/AZ/user-user.json
+    - data/AZ/ratings.parquet
+    - eval5/AZ/test-ratings.parquet
+    outs:
+    - eval5/AZ/user-user.model
+    wdir: ..
+
+  measure-AZ-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 AZ user-user
+    deps:
+    - tuning/AZ/user-user.json
+    - eval5/AZ/test-ratings.parquet
+    - eval5/AZ/user-user.model
+    outs:
+    - eval5/AZ/user-user-recs.parquet
+    - eval5/AZ/user-user-metrics.json
+    wdir: ..
+
+  AZ-user-user-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ user-user
+    wdir: ..
+    deps:
+    - eval5/AZ/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/AZ/user-user.model
+    outs:
+    - eval5/AZ/user-user-group-relevance.csv.gz
+
+  AZ-user-user-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ user-user
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/AZ/user-user.model
+    - eval5/AZ/item-item.model
+    - eval5/AZ/als.model
+    - eval5/AZ/user-user-imp.model
+    - eval5/AZ/item-item-imp.model
+    - eval5/AZ/wrls-imp.model
+    - eval5/AZ/bpr-imp.model
+    
+    outs:
+    - eval5/AZ/user-user-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-AZ-item-item:
+    cmd: python -m scripts.train-model  --train-data eval5 AZ item-item
+    deps:
+    - random.toml
+    - tuning/AZ/item-item.json
+    - data/AZ/ratings.parquet
+    - eval5/AZ/test-ratings.parquet
+    outs:
+    - eval5/AZ/item-item.model
+    wdir: ..
+
+  measure-AZ-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 AZ item-item
+    deps:
+    - tuning/AZ/item-item.json
+    - eval5/AZ/test-ratings.parquet
+    - eval5/AZ/item-item.model
+    outs:
+    - eval5/AZ/item-item-recs.parquet
+    - eval5/AZ/item-item-metrics.json
+    wdir: ..
+
+  AZ-item-item-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ item-item
+    wdir: ..
+    deps:
+    - eval5/AZ/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/AZ/item-item.model
+    outs:
+    - eval5/AZ/item-item-group-relevance.csv.gz
+
+  AZ-item-item-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ item-item
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/AZ/user-user.model
+    - eval5/AZ/item-item.model
+    - eval5/AZ/als.model
+    - eval5/AZ/user-user-imp.model
+    - eval5/AZ/item-item-imp.model
+    - eval5/AZ/wrls-imp.model
+    - eval5/AZ/bpr-imp.model
+    
+    outs:
+    - eval5/AZ/item-item-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-AZ-als:
+    cmd: python -m scripts.train-model  --train-data eval5 AZ als
+    deps:
+    - random.toml
+    - tuning/AZ/als.json
+    - data/AZ/ratings.parquet
+    - eval5/AZ/test-ratings.parquet
+    outs:
+    - eval5/AZ/als.model
+    wdir: ..
+
+  measure-AZ-als:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 AZ als
+    deps:
+    - tuning/AZ/als.json
+    - eval5/AZ/test-ratings.parquet
+    - eval5/AZ/als.model
+    outs:
+    - eval5/AZ/als-recs.parquet
+    - eval5/AZ/als-metrics.json
+    wdir: ..
+
+  AZ-als-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ als
+    wdir: ..
+    deps:
+    - eval5/AZ/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/AZ/als.model
+    outs:
+    - eval5/AZ/als-group-relevance.csv.gz
+
+  AZ-als-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ als
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/AZ/user-user.model
+    - eval5/AZ/item-item.model
+    - eval5/AZ/als.model
+    - eval5/AZ/user-user-imp.model
+    - eval5/AZ/item-item-imp.model
+    - eval5/AZ/wrls-imp.model
+    - eval5/AZ/bpr-imp.model
+    
+    outs:
+    - eval5/AZ/als-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-AZ-user-user-imp:
+    cmd: python -m scripts.train-model --drop-ratings -N user-user-imp --train-data eval5 AZ user-user
+    deps:
+    - random.toml
+    - tuning/AZ/user-user-imp.json
+    - data/AZ/ratings.parquet
+    - eval5/AZ/test-ratings.parquet
+    outs:
+    - eval5/AZ/user-user-imp.model
+    wdir: ..
+
+  measure-AZ-user-user-imp:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 --drop-ratings -N user-user-imp --pretrained -n 1000 AZ user-user
+    deps:
+    - tuning/AZ/user-user-imp.json
+    - eval5/AZ/test-ratings.parquet
+    - eval5/AZ/user-user-imp.model
+    outs:
+    - eval5/AZ/user-user-imp-recs.parquet
+    - eval5/AZ/user-user-imp-metrics.json
+    wdir: ..
+
+  AZ-user-user-imp-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ user-user-imp
+    wdir: ..
+    deps:
+    - eval5/AZ/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/AZ/user-user-imp.model
+    outs:
+    - eval5/AZ/user-user-imp-group-relevance.csv.gz
+
+  AZ-user-user-imp-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ user-user-imp
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/AZ/user-user.model
+    - eval5/AZ/item-item.model
+    - eval5/AZ/als.model
+    - eval5/AZ/user-user-imp.model
+    - eval5/AZ/item-item-imp.model
+    - eval5/AZ/wrls-imp.model
+    - eval5/AZ/bpr-imp.model
+    
+    outs:
+    - eval5/AZ/user-user-imp-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-AZ-item-item-imp:
+    cmd: python -m scripts.train-model --drop-ratings -N item-item-imp --train-data eval5 AZ item-item
+    deps:
+    - random.toml
+    - tuning/AZ/item-item-imp.json
+    - data/AZ/ratings.parquet
+    - eval5/AZ/test-ratings.parquet
+    outs:
+    - eval5/AZ/item-item-imp.model
+    wdir: ..
+
+  measure-AZ-item-item-imp:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 --drop-ratings -N item-item-imp --pretrained -n 1000 AZ item-item
+    deps:
+    - tuning/AZ/item-item-imp.json
+    - eval5/AZ/test-ratings.parquet
+    - eval5/AZ/item-item-imp.model
+    outs:
+    - eval5/AZ/item-item-imp-recs.parquet
+    - eval5/AZ/item-item-imp-metrics.json
+    wdir: ..
+
+  AZ-item-item-imp-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ item-item-imp
+    wdir: ..
+    deps:
+    - eval5/AZ/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/AZ/item-item-imp.model
+    outs:
+    - eval5/AZ/item-item-imp-group-relevance.csv.gz
+
+  AZ-item-item-imp-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ item-item-imp
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/AZ/user-user.model
+    - eval5/AZ/item-item.model
+    - eval5/AZ/als.model
+    - eval5/AZ/user-user-imp.model
+    - eval5/AZ/item-item-imp.model
+    - eval5/AZ/wrls-imp.model
+    - eval5/AZ/bpr-imp.model
+    
+    outs:
+    - eval5/AZ/item-item-imp-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-AZ-wrls-imp:
+    cmd: python -m scripts.train-model --drop-ratings -N wrls-imp --train-data eval5 AZ wrls
+    deps:
+    - random.toml
+    - tuning/AZ/wrls-imp.json
+    - data/AZ/ratings.parquet
+    - eval5/AZ/test-ratings.parquet
+    outs:
+    - eval5/AZ/wrls-imp.model
+    wdir: ..
+
+  measure-AZ-wrls-imp:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 --drop-ratings -N wrls-imp --pretrained -n 1000 AZ wrls
+    deps:
+    - tuning/AZ/wrls-imp.json
+    - eval5/AZ/test-ratings.parquet
+    - eval5/AZ/wrls-imp.model
+    outs:
+    - eval5/AZ/wrls-imp-recs.parquet
+    - eval5/AZ/wrls-imp-metrics.json
+    wdir: ..
+
+  AZ-wrls-imp-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ wrls-imp
+    wdir: ..
+    deps:
+    - eval5/AZ/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/AZ/wrls-imp.model
+    outs:
+    - eval5/AZ/wrls-imp-group-relevance.csv.gz
+
+  AZ-wrls-imp-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ wrls-imp
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/AZ/user-user.model
+    - eval5/AZ/item-item.model
+    - eval5/AZ/als.model
+    - eval5/AZ/user-user-imp.model
+    - eval5/AZ/item-item-imp.model
+    - eval5/AZ/wrls-imp.model
+    - eval5/AZ/bpr-imp.model
+    
+    outs:
+    - eval5/AZ/wrls-imp-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-AZ-bpr-imp:
+    cmd: python -m scripts.train-model --drop-ratings -N bpr-imp --train-data eval5 AZ bpr
+    deps:
+    - random.toml
+    - tuning/AZ/bpr-imp.json
+    - data/AZ/ratings.parquet
+    - eval5/AZ/test-ratings.parquet
+    outs:
+    - eval5/AZ/bpr-imp.model
+    wdir: ..
+
+  measure-AZ-bpr-imp:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 --drop-ratings -N bpr-imp --pretrained -n 1000 AZ bpr
+    deps:
+    - tuning/AZ/bpr-imp.json
+    - eval5/AZ/test-ratings.parquet
+    - eval5/AZ/bpr-imp.model
+    outs:
+    - eval5/AZ/bpr-imp-recs.parquet
+    - eval5/AZ/bpr-imp-metrics.json
+    wdir: ..
+
+  AZ-bpr-imp-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 AZ bpr-imp
+    wdir: ..
+    deps:
+    - eval5/AZ/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/AZ/bpr-imp.model
+    outs:
+    - eval5/AZ/bpr-imp-group-relevance.csv.gz
+
+  AZ-bpr-imp-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 AZ bpr-imp
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/AZ/user-user.model
+    - eval5/AZ/item-item.model
+    - eval5/AZ/als.model
+    - eval5/AZ/user-user-imp.model
+    - eval5/AZ/item-item-imp.model
+    - eval5/AZ/wrls-imp.model
+    - eval5/AZ/bpr-imp.model
+    
+    outs:
+    - eval5/AZ/bpr-imp-pairwise-metrics.json
+  
+
+  eval-split-BX-E:
+    cmd: python -m scripts.split-ratings -d eval5 --min-ratings 10 --test-ratings 5 BX-E
+    deps:
+    - random.toml
+    - scripts/split-ratings.py
+    - data/BX-E/ratings.parquet
+    outs:
+    - eval5/BX-E/test-ratings.parquet
+    wdir: ..
+
+  group-rel-BX-E:
+    cmd: python -m scripts.group-relevance -d eval5 --test-ratings BX-E
+    wdir: ..
+    deps:
+    - eval5/BX-E/test-ratings.parquet
+    - data/cluster-genders.parquet
+    outs:
+    - eval5/BX-E/test-ratings-group-relevance.csv.gz
+
+  
+  
+  
+  
+  
+
+  eval-train-BX-E-user-user:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-E user-user
+    deps:
+    - random.toml
+    - tuning/BX-E/user-user.json
+    - data/BX-E/ratings.parquet
+    - eval5/BX-E/test-ratings.parquet
+    outs:
+    - eval5/BX-E/user-user.model
+    wdir: ..
+
+  measure-BX-E-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-E user-user
+    deps:
+    - tuning/BX-E/user-user.json
+    - eval5/BX-E/test-ratings.parquet
+    - eval5/BX-E/user-user.model
+    outs:
+    - eval5/BX-E/user-user-recs.parquet
+    - eval5/BX-E/user-user-metrics.json
+    wdir: ..
+
+  BX-E-user-user-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-E user-user
+    wdir: ..
+    deps:
+    - eval5/BX-E/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/BX-E/user-user.model
+    outs:
+    - eval5/BX-E/user-user-group-relevance.csv.gz
+
+  BX-E-user-user-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-E user-user
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/BX-E/user-user.model
+    - eval5/BX-E/item-item.model
+    - eval5/BX-E/als.model
+    
+    outs:
+    - eval5/BX-E/user-user-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-BX-E-item-item:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-E item-item
+    deps:
+    - random.toml
+    - tuning/BX-E/item-item.json
+    - data/BX-E/ratings.parquet
+    - eval5/BX-E/test-ratings.parquet
+    outs:
+    - eval5/BX-E/item-item.model
+    wdir: ..
+
+  measure-BX-E-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-E item-item
+    deps:
+    - tuning/BX-E/item-item.json
+    - eval5/BX-E/test-ratings.parquet
+    - eval5/BX-E/item-item.model
+    outs:
+    - eval5/BX-E/item-item-recs.parquet
+    - eval5/BX-E/item-item-metrics.json
+    wdir: ..
+
+  BX-E-item-item-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-E item-item
+    wdir: ..
+    deps:
+    - eval5/BX-E/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/BX-E/item-item.model
+    outs:
+    - eval5/BX-E/item-item-group-relevance.csv.gz
+
+  BX-E-item-item-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-E item-item
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/BX-E/user-user.model
+    - eval5/BX-E/item-item.model
+    - eval5/BX-E/als.model
+    
+    outs:
+    - eval5/BX-E/item-item-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-BX-E-als:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-E als
+    deps:
+    - random.toml
+    - tuning/BX-E/als.json
+    - data/BX-E/ratings.parquet
+    - eval5/BX-E/test-ratings.parquet
+    outs:
+    - eval5/BX-E/als.model
+    wdir: ..
+
+  measure-BX-E-als:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-E als
+    deps:
+    - tuning/BX-E/als.json
+    - eval5/BX-E/test-ratings.parquet
+    - eval5/BX-E/als.model
+    outs:
+    - eval5/BX-E/als-recs.parquet
+    - eval5/BX-E/als-metrics.json
+    wdir: ..
+
+  BX-E-als-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-E als
+    wdir: ..
+    deps:
+    - eval5/BX-E/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/BX-E/als.model
+    outs:
+    - eval5/BX-E/als-group-relevance.csv.gz
+
+  BX-E-als-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-E als
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/BX-E/user-user.model
+    - eval5/BX-E/item-item.model
+    - eval5/BX-E/als.model
+    
+    outs:
+    - eval5/BX-E/als-pairwise-metrics.json
+  
+
+  eval-split-BX-I:
+    cmd: python -m scripts.split-ratings -d eval5 --min-ratings 10 --test-ratings 5 BX-I
+    deps:
+    - random.toml
+    - scripts/split-ratings.py
+    - data/BX-I/ratings.parquet
+    outs:
+    - eval5/BX-I/test-ratings.parquet
+    wdir: ..
+
+  group-rel-BX-I:
+    cmd: python -m scripts.group-relevance -d eval5 --test-ratings BX-I
+    wdir: ..
+    deps:
+    - eval5/BX-I/test-ratings.parquet
+    - data/cluster-genders.parquet
+    outs:
+    - eval5/BX-I/test-ratings-group-relevance.csv.gz
+
+  
+  
+  
+  
+  
+
+  eval-train-BX-I-user-user:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-I user-user
+    deps:
+    - random.toml
+    - tuning/BX-I/user-user.json
+    - data/BX-I/ratings.parquet
+    - eval5/BX-I/test-ratings.parquet
+    outs:
+    - eval5/BX-I/user-user.model
+    wdir: ..
+
+  measure-BX-I-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-I user-user
+    deps:
+    - tuning/BX-I/user-user.json
+    - eval5/BX-I/test-ratings.parquet
+    - eval5/BX-I/user-user.model
+    outs:
+    - eval5/BX-I/user-user-recs.parquet
+    - eval5/BX-I/user-user-metrics.json
+    wdir: ..
+
+  BX-I-user-user-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-I user-user
+    wdir: ..
+    deps:
+    - eval5/BX-I/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/BX-I/user-user.model
+    outs:
+    - eval5/BX-I/user-user-group-relevance.csv.gz
+
+  BX-I-user-user-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-I user-user
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/BX-I/user-user.model
+    - eval5/BX-I/item-item.model
+    - eval5/BX-I/wrls.model
+    - eval5/BX-I/bpr.model
+    
+    outs:
+    - eval5/BX-I/user-user-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-BX-I-item-item:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-I item-item
+    deps:
+    - random.toml
+    - tuning/BX-I/item-item.json
+    - data/BX-I/ratings.parquet
+    - eval5/BX-I/test-ratings.parquet
+    outs:
+    - eval5/BX-I/item-item.model
+    wdir: ..
+
+  measure-BX-I-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-I item-item
+    deps:
+    - tuning/BX-I/item-item.json
+    - eval5/BX-I/test-ratings.parquet
+    - eval5/BX-I/item-item.model
+    outs:
+    - eval5/BX-I/item-item-recs.parquet
+    - eval5/BX-I/item-item-metrics.json
+    wdir: ..
+
+  BX-I-item-item-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-I item-item
+    wdir: ..
+    deps:
+    - eval5/BX-I/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/BX-I/item-item.model
+    outs:
+    - eval5/BX-I/item-item-group-relevance.csv.gz
+
+  BX-I-item-item-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-I item-item
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/BX-I/user-user.model
+    - eval5/BX-I/item-item.model
+    - eval5/BX-I/wrls.model
+    - eval5/BX-I/bpr.model
+    
+    outs:
+    - eval5/BX-I/item-item-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-BX-I-wrls:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-I wrls
+    deps:
+    - random.toml
+    - tuning/BX-I/wrls.json
+    - data/BX-I/ratings.parquet
+    - eval5/BX-I/test-ratings.parquet
+    outs:
+    - eval5/BX-I/wrls.model
+    wdir: ..
+
+  measure-BX-I-wrls:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-I wrls
+    deps:
+    - tuning/BX-I/wrls.json
+    - eval5/BX-I/test-ratings.parquet
+    - eval5/BX-I/wrls.model
+    outs:
+    - eval5/BX-I/wrls-recs.parquet
+    - eval5/BX-I/wrls-metrics.json
+    wdir: ..
+
+  BX-I-wrls-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-I wrls
+    wdir: ..
+    deps:
+    - eval5/BX-I/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/BX-I/wrls.model
+    outs:
+    - eval5/BX-I/wrls-group-relevance.csv.gz
+
+  BX-I-wrls-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-I wrls
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/BX-I/user-user.model
+    - eval5/BX-I/item-item.model
+    - eval5/BX-I/wrls.model
+    - eval5/BX-I/bpr.model
+    
+    outs:
+    - eval5/BX-I/wrls-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-BX-I-bpr:
+    cmd: python -m scripts.train-model  --train-data eval5 BX-I bpr
+    deps:
+    - random.toml
+    - tuning/BX-I/bpr.json
+    - data/BX-I/ratings.parquet
+    - eval5/BX-I/test-ratings.parquet
+    outs:
+    - eval5/BX-I/bpr.model
+    wdir: ..
+
+  measure-BX-I-bpr:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 BX-I bpr
+    deps:
+    - tuning/BX-I/bpr.json
+    - eval5/BX-I/test-ratings.parquet
+    - eval5/BX-I/bpr.model
+    outs:
+    - eval5/BX-I/bpr-recs.parquet
+    - eval5/BX-I/bpr-metrics.json
+    wdir: ..
+
+  BX-I-bpr-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 BX-I bpr
+    wdir: ..
+    deps:
+    - eval5/BX-I/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/BX-I/bpr.model
+    outs:
+    - eval5/BX-I/bpr-group-relevance.csv.gz
+
+  BX-I-bpr-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 BX-I bpr
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/BX-I/user-user.model
+    - eval5/BX-I/item-item.model
+    - eval5/BX-I/wrls.model
+    - eval5/BX-I/bpr.model
+    
+    outs:
+    - eval5/BX-I/bpr-pairwise-metrics.json
+  
+
+  eval-split-GR-E:
+    cmd: python -m scripts.split-ratings -d eval5 --min-ratings 10 --test-ratings 5 GR-E
+    deps:
+    - random.toml
+    - scripts/split-ratings.py
+    - data/GR-E/ratings.parquet
+    outs:
+    - eval5/GR-E/test-ratings.parquet
+    wdir: ..
+
+  group-rel-GR-E:
+    cmd: python -m scripts.group-relevance -d eval5 --test-ratings GR-E
+    wdir: ..
+    deps:
+    - eval5/GR-E/test-ratings.parquet
+    - data/cluster-genders.parquet
+    outs:
+    - eval5/GR-E/test-ratings-group-relevance.csv.gz
+
+  
+  
+  
+  
+  
+
+  eval-train-GR-E-user-user:
+    cmd: python -m scripts.train-model  --train-data eval5 GR-E user-user
+    deps:
+    - random.toml
+    - tuning/GR-E/user-user.json
+    - data/GR-E/ratings.parquet
+    - eval5/GR-E/test-ratings.parquet
+    outs:
+    - eval5/GR-E/user-user.model
+    wdir: ..
+
+  measure-GR-E-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-E user-user
+    deps:
+    - tuning/GR-E/user-user.json
+    - eval5/GR-E/test-ratings.parquet
+    - eval5/GR-E/user-user.model
+    outs:
+    - eval5/GR-E/user-user-recs.parquet
+    - eval5/GR-E/user-user-metrics.json
+    wdir: ..
+
+  GR-E-user-user-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 GR-E user-user
+    wdir: ..
+    deps:
+    - eval5/GR-E/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/GR-E/user-user.model
+    outs:
+    - eval5/GR-E/user-user-group-relevance.csv.gz
+
+  GR-E-user-user-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 GR-E user-user
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/GR-E/user-user.model
+    - eval5/GR-E/item-item.model
+    
+    outs:
+    - eval5/GR-E/user-user-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-GR-E-item-item:
+    cmd: python -m scripts.train-model  --train-data eval5 GR-E item-item
+    deps:
+    - random.toml
+    - tuning/GR-E/item-item.json
+    - data/GR-E/ratings.parquet
+    - eval5/GR-E/test-ratings.parquet
+    outs:
+    - eval5/GR-E/item-item.model
+    wdir: ..
+
+  measure-GR-E-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-E item-item
+    deps:
+    - tuning/GR-E/item-item.json
+    - eval5/GR-E/test-ratings.parquet
+    - eval5/GR-E/item-item.model
+    outs:
+    - eval5/GR-E/item-item-recs.parquet
+    - eval5/GR-E/item-item-metrics.json
+    wdir: ..
+
+  GR-E-item-item-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 GR-E item-item
+    wdir: ..
+    deps:
+    - eval5/GR-E/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/GR-E/item-item.model
+    outs:
+    - eval5/GR-E/item-item-group-relevance.csv.gz
+
+  GR-E-item-item-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 GR-E item-item
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/GR-E/user-user.model
+    - eval5/GR-E/item-item.model
+    
+    outs:
+    - eval5/GR-E/item-item-pairwise-metrics.json
+  
+
+  eval-split-GR-I:
+    cmd: python -m scripts.split-ratings -d eval5 --min-ratings 10 --test-ratings 5 GR-I
+    deps:
+    - random.toml
+    - scripts/split-ratings.py
+    - data/GR-I/ratings.parquet
+    outs:
+    - eval5/GR-I/test-ratings.parquet
+    wdir: ..
+
+  group-rel-GR-I:
+    cmd: python -m scripts.group-relevance -d eval5 --test-ratings GR-I
+    wdir: ..
+    deps:
+    - eval5/GR-I/test-ratings.parquet
+    - data/cluster-genders.parquet
+    outs:
+    - eval5/GR-I/test-ratings-group-relevance.csv.gz
+
+  
+  
+  
+  
+  
+
+  eval-train-GR-I-user-user:
+    cmd: python -m scripts.train-model  --train-data eval5 GR-I user-user
+    deps:
+    - random.toml
+    - tuning/GR-I/user-user.json
+    - data/GR-I/ratings.parquet
+    - eval5/GR-I/test-ratings.parquet
+    outs:
+    - eval5/GR-I/user-user.model
+    wdir: ..
+
+  measure-GR-I-user-user:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-I user-user
+    deps:
+    - tuning/GR-I/user-user.json
+    - eval5/GR-I/test-ratings.parquet
+    - eval5/GR-I/user-user.model
+    outs:
+    - eval5/GR-I/user-user-recs.parquet
+    - eval5/GR-I/user-user-metrics.json
+    wdir: ..
+
+  GR-I-user-user-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 GR-I user-user
+    wdir: ..
+    deps:
+    - eval5/GR-I/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/GR-I/user-user.model
+    outs:
+    - eval5/GR-I/user-user-group-relevance.csv.gz
+
+  GR-I-user-user-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 GR-I user-user
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/GR-I/user-user.model
+    - eval5/GR-I/item-item.model
+    - eval5/GR-I/wrls.model
+    - eval5/GR-I/bpr.model
+    
+    outs:
+    - eval5/GR-I/user-user-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-GR-I-item-item:
+    cmd: python -m scripts.train-model  --train-data eval5 GR-I item-item
+    deps:
+    - random.toml
+    - tuning/GR-I/item-item.json
+    - data/GR-I/ratings.parquet
+    - eval5/GR-I/test-ratings.parquet
+    outs:
+    - eval5/GR-I/item-item.model
+    wdir: ..
+
+  measure-GR-I-item-item:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-I item-item
+    deps:
+    - tuning/GR-I/item-item.json
+    - eval5/GR-I/test-ratings.parquet
+    - eval5/GR-I/item-item.model
+    outs:
+    - eval5/GR-I/item-item-recs.parquet
+    - eval5/GR-I/item-item-metrics.json
+    wdir: ..
+
+  GR-I-item-item-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 GR-I item-item
+    wdir: ..
+    deps:
+    - eval5/GR-I/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/GR-I/item-item.model
+    outs:
+    - eval5/GR-I/item-item-group-relevance.csv.gz
+
+  GR-I-item-item-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 GR-I item-item
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/GR-I/user-user.model
+    - eval5/GR-I/item-item.model
+    - eval5/GR-I/wrls.model
+    - eval5/GR-I/bpr.model
+    
+    outs:
+    - eval5/GR-I/item-item-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-GR-I-wrls:
+    cmd: python -m scripts.train-model  --train-data eval5 GR-I wrls
+    deps:
+    - random.toml
+    - tuning/GR-I/wrls.json
+    - data/GR-I/ratings.parquet
+    - eval5/GR-I/test-ratings.parquet
+    outs:
+    - eval5/GR-I/wrls.model
+    wdir: ..
+
+  measure-GR-I-wrls:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-I wrls
+    deps:
+    - tuning/GR-I/wrls.json
+    - eval5/GR-I/test-ratings.parquet
+    - eval5/GR-I/wrls.model
+    outs:
+    - eval5/GR-I/wrls-recs.parquet
+    - eval5/GR-I/wrls-metrics.json
+    wdir: ..
+
+  GR-I-wrls-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 GR-I wrls
+    wdir: ..
+    deps:
+    - eval5/GR-I/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/GR-I/wrls.model
+    outs:
+    - eval5/GR-I/wrls-group-relevance.csv.gz
+
+  GR-I-wrls-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 GR-I wrls
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/GR-I/user-user.model
+    - eval5/GR-I/item-item.model
+    - eval5/GR-I/wrls.model
+    - eval5/GR-I/bpr.model
+    
+    outs:
+    - eval5/GR-I/wrls-pairwise-metrics.json
+  
+  
+  
+  
+  
+
+  eval-train-GR-I-bpr:
+    cmd: python -m scripts.train-model  --train-data eval5 GR-I bpr
+    deps:
+    - random.toml
+    - tuning/GR-I/bpr.json
+    - data/GR-I/ratings.parquet
+    - eval5/GR-I/test-ratings.parquet
+    outs:
+    - eval5/GR-I/bpr.model
+    wdir: ..
+
+  measure-GR-I-bpr:
+    cmd: python -m scripts.eval-algo --eval-dir eval5  --pretrained -n 1000 GR-I bpr
+    deps:
+    - tuning/GR-I/bpr.json
+    - eval5/GR-I/test-ratings.parquet
+    - eval5/GR-I/bpr.model
+    outs:
+    - eval5/GR-I/bpr-recs.parquet
+    - eval5/GR-I/bpr-metrics.json
+    wdir: ..
+
+  GR-I-bpr-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 GR-I bpr
+    wdir: ..
+    deps:
+    - eval5/GR-I/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/GR-I/bpr.model
+    outs:
+    - eval5/GR-I/bpr-group-relevance.csv.gz
+
+  GR-I-bpr-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 GR-I bpr
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    - eval5/GR-I/user-user.model
+    - eval5/GR-I/item-item.model
+    - eval5/GR-I/wrls.model
+    - eval5/GR-I/bpr.model
+    
+    outs:
+    - eval5/GR-I/bpr-pairwise-metrics.json
+  
+
+
+  aggregate:
+    cmd: python -m scripts.aggregate --rec-perf -d eval5
+    wdir: ..
+    deps:
+    - eval/BX-E/user-user-metrics.json
+    - eval/BX-E/item-item-metrics.json
+    - eval/BX-E/als-metrics.json
+    - eval/BX-I/user-user-metrics.json
+    - eval/BX-I/item-item-metrics.json
+    - eval/BX-I/wrls-metrics.json
+    - eval/BX-I/bpr-metrics.json
+    - eval/AZ/user-user-metrics.json
+    - eval/AZ/item-item-metrics.json
+    - eval/AZ/als-metrics.json
+    - eval/AZ/user-user-imp-metrics.json
+    - eval/AZ/item-item-imp-metrics.json
+    - eval/AZ/wrls-imp-metrics.json
+    - eval/AZ/bpr-imp-metrics.json
+    - eval/GR-E/user-user-metrics.json
+    - eval/GR-E/item-item-metrics.json
+    - eval/GR-I/user-user-metrics.json
+    - eval/GR-I/item-item-metrics.json
+    - eval/GR-I/wrls-metrics.json
+    - eval/GR-I/bpr-metrics.json
+    
+    outs:
+    - eval5/rec-perf.csv

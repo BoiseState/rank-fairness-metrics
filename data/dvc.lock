@@ -1,0 +1,357 @@
+schema: '2.0'
+stages:
+  sample-user-AZ:
+    cmd: python -m scripts.sample-users AZ
+    deps:
+    - path: data/AZ/ratings.parquet
+      md5: bda3de597e450fc2de1a67358b29b999
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+    - path: scripts/sample-users.py
+      md5: 50d17ebbf634bda6d478dd31a70a237d
+    outs:
+    - path: data/AZ/sample-ratings.csv
+      md5: 4f4526d930e0d484e4f3d51079083d35
+    - path: data/AZ/sample-stats.json
+      md5: 832f544257817d74f7ea55e5c542530d
+    - path: data/AZ/sample-users.csv
+      md5: 30f73593598ca1ffed56d23af06e1ea2
+  sample-user-BX-E:
+    cmd: python -m scripts.sample-users BX-E
+    deps:
+    - path: data/BX-E/ratings.parquet
+      md5: 98c709059da7faa215dd8ff5b48a1f75
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+    - path: scripts/sample-users.py
+      md5: 50d17ebbf634bda6d478dd31a70a237d
+    outs:
+    - path: data/BX-E/sample-ratings.csv
+      md5: d7e90275b687052fdac41b84d4655c85
+    - path: data/BX-E/sample-stats.json
+      md5: acdff8a792317a3d8066f1bc08d578d1
+    - path: data/BX-E/sample-users.csv
+      md5: 11e18f421dcdbcf2489fffbc214f5eab
+  sample-user-BX-I:
+    cmd: python -m scripts.sample-users BX-I
+    deps:
+    - path: data/BX-I/ratings.parquet
+      md5: 2db8aa8d32005bb8aa43f029ab053081
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+    - path: scripts/sample-users.py
+      md5: 50d17ebbf634bda6d478dd31a70a237d
+    outs:
+    - path: data/BX-I/sample-ratings.csv
+      md5: f332b8c872c2645e5ad2b4bfca2bb06a
+    - path: data/BX-I/sample-stats.json
+      md5: e07bfc0e06c8cb3fd2a4168d0d3cdb21
+    - path: data/BX-I/sample-users.csv
+      md5: 877d24c8c235dd7249068a96e206a0ef
+  sample-user-GR-E:
+    cmd: python -m scripts.sample-users GR-E
+    deps:
+    - path: data/GR-E/ratings.parquet
+      md5: b87c0807c2ba22b3a56d405c1dac7fb3
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+    - path: scripts/sample-users.py
+      md5: 50d17ebbf634bda6d478dd31a70a237d
+    outs:
+    - path: data/GR-E/sample-ratings.csv
+      md5: 9bdba33e3258714da4d5a836f8b58beb
+    - path: data/GR-E/sample-stats.json
+      md5: 76cb9d57383696f6fd18dd43f2e42643
+    - path: data/GR-E/sample-users.csv
+      md5: 588f35dad2ceec22b436669a524c7691
+  sample-user-GR-I:
+    cmd: python -m scripts.sample-users GR-I
+    deps:
+    - path: data/GR-I/ratings.parquet
+      md5: 5ab4c322b08510efbbd7c20f587d66fa
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+    - path: scripts/sample-users.py
+      md5: 50d17ebbf634bda6d478dd31a70a237d
+    outs:
+    - path: data/GR-I/sample-ratings.csv
+      md5: 8733add4e846fe2ec1f8d82fcfff8861
+    - path: data/GR-I/sample-stats.json
+      md5: 9061b5692c48073b2914b0ef09fb10ad
+    - path: data/GR-I/sample-users.csv
+      md5: 1e9019711487c122b6f73f6d5babbe0e
+  example-AZ:
+    cmd: python -m scripts.export --ratings AZ
+    deps:
+    - path: data/version-stamp.txt
+      md5: 04653fa263e4f38e42d44cb122a9898c
+    outs:
+    - path: data/AZ/ratings.parquet
+      md5: b3e625b272ea60cc180d0459a6db601c
+  sample-AZ:
+    cmd: python -m scripts.sample-users AZ
+    deps:
+    - path: data/AZ/ratings.parquet
+      md5: 34b85564594270315214de1e36d5a6e8
+      size: 302362488
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 97
+    - path: scripts/sample-users.py
+      md5: 9fd9579aaca94b4a53b18bba85d49c9c
+      size: 2843
+    outs:
+    - path: data/AZ/sample-ratings.csv
+      md5: ec3c7bbc00c6e4142f3263e8adebcbf3
+      size: 3056753
+    - path: data/AZ/sample-stats.json
+      md5: b329dd16f8b41cb53363c128182f7e0f
+      size: 54
+    - path: data/AZ/sample-users.csv
+      md5: 6bf4dc575903ec9b4264d32c7d69631a
+      size: 61442
+  example-BX-E:
+    cmd: python -m scripts.export --ratings BX-E
+    deps:
+    - path: data/version-stamp.txt
+      md5: 04653fa263e4f38e42d44cb122a9898c
+    outs:
+    - path: data/BX-E/ratings.parquet
+      md5: 493528388db198a605bb9d49b69c3ee7
+  sample-BX-E:
+    cmd: python -m scripts.sample-users BX-E
+    deps:
+    - path: data/BX-E/ratings.parquet
+      md5: cfc5f8e674cadee8cd048e933df1ba6e
+      size: 3043969
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 97
+    - path: scripts/sample-users.py
+      md5: 9fd9579aaca94b4a53b18bba85d49c9c
+      size: 2843
+    outs:
+    - path: data/BX-E/sample-ratings.csv
+      md5: aaee777c7a622c4fc7b347234034b12a
+      size: 3571258
+    - path: data/BX-E/sample-stats.json
+      md5: ca29c9ea4857a7cf7c3dba10ef9d6559
+      size: 53
+    - path: data/BX-E/sample-users.csv
+      md5: bee90a9db6f3293f124ab919613146ca
+      size: 58909
+  example-BX-I:
+    cmd: python -m scripts.export --ratings BX-I
+    deps:
+    - path: data/version-stamp.txt
+      md5: 04653fa263e4f38e42d44cb122a9898c
+    outs:
+    - path: data/BX-I/ratings.parquet
+      md5: 492b7461c8cdcf6e1f4cc8d11534671c
+  sample-BX-I:
+    cmd: python -m scripts.sample-users BX-I
+    deps:
+    - path: data/BX-I/ratings.parquet
+      md5: a12cec3da8304c9efd650d9bcf9e0ec3
+      size: 7251065
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 97
+    - path: scripts/sample-users.py
+      md5: 9fd9579aaca94b4a53b18bba85d49c9c
+      size: 2843
+    outs:
+    - path: data/BX-I/sample-ratings.csv
+      md5: 0ffbeca1ca238fc139777c98219a1088
+      size: 5571333
+    - path: data/BX-I/sample-stats.json
+      md5: f56f590fc44fb417d4f2358a0299f33d
+      size: 53
+    - path: data/BX-I/sample-users.csv
+      md5: 59d8b597fa170494c7dcaea57ace7f16
+      size: 60098
+  example-GR-E:
+    cmd: python -m scripts.export --ratings GR-E
+    deps:
+    - path: data/version-stamp.txt
+      md5: 04653fa263e4f38e42d44cb122a9898c
+    outs:
+    - path: data/GR-E/ratings.parquet
+      md5: b87c0807c2ba22b3a56d405c1dac7fb3
+  sample-GR-E:
+    cmd: python -m scripts.sample-users GR-E
+    deps:
+    - path: data/GR-E/ratings.parquet
+      md5: 9207efc2b91514ae300352f4666394c5
+      size: 1400725167
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 97
+    - path: scripts/sample-users.py
+      md5: 9fd9579aaca94b4a53b18bba85d49c9c
+      size: 2843
+    outs:
+    - path: data/GR-E/sample-ratings.csv
+      md5: 2946e6e1451db43593c1c790723f72c4
+      size: 18539049
+    - path: data/GR-E/sample-stats.json
+      md5: 12a1b82c64d207b1f9bb68bf5678c5db
+      size: 54
+    - path: data/GR-E/sample-users.csv
+      md5: fb192d9af65b4cf993d99bf37e1a4f5c
+      size: 67095
+  example-GR-I:
+    cmd: python -m scripts.export --ratings GR-I
+    deps:
+    - path: data/version-stamp.txt
+      md5: 04653fa263e4f38e42d44cb122a9898c
+    outs:
+    - path: data/GR-I/ratings.parquet
+      md5: 5ab4c322b08510efbbd7c20f587d66fa
+  sample-GR-I:
+    cmd: python -m scripts.sample-users GR-I
+    deps:
+    - path: data/GR-I/ratings.parquet
+      md5: 2aefcacc130500cb9f8c88050bbcbb1b
+      size: 2917243446
+    - path: data/cluster-genders.parquet
+      md5: 2b2d2b05adeb8a221a0d927a2ac4cd13
+      size: 106886115
+    - path: random.toml
+      md5: 94d65def306915fef706865e476a68d5
+      size: 97
+    - path: scripts/sample-users.py
+      md5: 9fd9579aaca94b4a53b18bba85d49c9c
+      size: 2843
+    outs:
+    - path: data/GR-I/sample-ratings.csv
+      md5: 69825164f2680058d698078801e5a409
+      size: 30085664
+    - path: data/GR-I/sample-stats.json
+      md5: 2c0ed06713c5c6a8eabc2f3f83152fa8
+      size: 55
+    - path: data/GR-I/sample-users.csv
+      md5: c53507eb3a9c4908a7d402dcc5545d06
+      size: 69162
+  export-AZ:
+    cmd: python -m scripts.export --ratings AZ
+    deps:
+    - path: data/version-stamp.txt
+      md5: 359be79120434549ce5d7245b6a42e6e
+    outs:
+    - path: data/AZ/ratings.parquet
+      md5: a88d5a2186014f10da03c67e3118da28
+  export-BX-E:
+    cmd: python -m scripts.export --ratings BX-E
+    deps:
+    - path: data/version-stamp.txt
+      md5: 359be79120434549ce5d7245b6a42e6e
+    outs:
+    - path: data/BX-E/ratings.parquet
+      md5: c74a3435b68418152de6e852ca35bf6f
+  export-BX-I:
+    cmd: python -m scripts.export --ratings BX-I
+    deps:
+    - path: data/version-stamp.txt
+      md5: 359be79120434549ce5d7245b6a42e6e
+    outs:
+    - path: data/BX-I/ratings.parquet
+      md5: 87dcbbf5c18035aad4db9c41c7d363c2
+  export-GR-E:
+    cmd: python -m scripts.export --ratings GR-E
+    deps:
+    - path: data/version-stamp.txt
+      md5: 359be79120434549ce5d7245b6a42e6e
+    outs:
+    - path: data/GR-E/ratings.parquet
+      md5: 6d56fddcbf67ee872d5847b1e26a57bf
+  export-GR-I:
+    cmd: python -m scripts.export --ratings GR-I
+    deps:
+    - path: data/version-stamp.txt
+      md5: 359be79120434549ce5d7245b6a42e6e
+    outs:
+    - path: data/GR-I/ratings.parquet
+      md5: 6a11f1bbb1aeba57a4811cb899f186b0
+  sample:
+    cmd: python -m scripts.aggregate --users
+    deps:
+    - path: data/AZ/sample-ratings.csv
+      md5: ec3c7bbc00c6e4142f3263e8adebcbf3
+      size: 3056753
+    - path: data/AZ/sample-users.csv
+      md5: 6bf4dc575903ec9b4264d32c7d69631a
+      size: 61442
+    - path: data/BX-E/sample-ratings.csv
+      md5: aaee777c7a622c4fc7b347234034b12a
+      size: 3571258
+    - path: data/BX-E/sample-users.csv
+      md5: bee90a9db6f3293f124ab919613146ca
+      size: 58909
+    - path: data/BX-I/sample-ratings.csv
+      md5: 0ffbeca1ca238fc139777c98219a1088
+      size: 5571333
+    - path: data/BX-I/sample-users.csv
+      md5: 59d8b597fa170494c7dcaea57ace7f16
+      size: 60098
+    - path: data/GR-E/sample-ratings.csv
+      md5: 2946e6e1451db43593c1c790723f72c4
+      size: 18539049
+    - path: data/GR-E/sample-users.csv
+      md5: fb192d9af65b4cf993d99bf37e1a4f5c
+      size: 67095
+    - path: data/GR-I/sample-ratings.csv
+      md5: 69825164f2680058d698078801e5a409
+      size: 30085664
+    - path: data/GR-I/sample-users.csv
+      md5: c53507eb3a9c4908a7d402dcc5545d06
+      size: 69162
+    outs:
+    - path: data/study-ratings.csv
+      md5: 5ad39a4b77947fbc686ec7d7bc1cf3db
+      size: 75109913
+    - path: data/study-users.csv
+      md5: 7a82040e005757abdcc3e1293897d99a
+      size: 431566
+  author-gender:
+    cmd: python -m scripts.export --authors
+    deps:
+    - path: data/version-stamp.txt
+      md5: 359be79120434549ce5d7245b6a42e6e
+    outs:
+    - path: data/author-gender.csv.gz
+      md5: 3a60a675852923d1589b041dd4e922af
+    - path: data/author-gender.parquet
+      md5: a74195b2e83308cc186dd65a978c43b9
+  book-hash:
+    cmd: python -m scripts.export --book-hashes
+    deps:
+    - path: data/version-stamp.txt
+      md5: 359be79120434549ce5d7245b6a42e6e
+    outs:
+    - path: data/book-hash.csv.gz
+      md5: cfbe1ff4d88afb7c8df3ae677779c33d
+    - path: data/book-hash.parquet
+      md5: 2c1cc736d211968ce080aa6a9492efb2
+  loc-books:
+    cmd: python -m scripts.export --loc-books
+    deps:
+    - path: data/version-stamp.txt
+      md5: 359be79120434549ce5d7245b6a42e6e
+    outs:
+    - path: data/loc-books.csv.gz
+      md5: 658f34adfed1b717791c9d10dbf3e91a
+    - path: data/loc-books.parquet
+      md5: 15b43b015ddb9bf30fdb7fca5adc794f

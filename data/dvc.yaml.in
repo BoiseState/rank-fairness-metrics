@@ -1,0 +1,26 @@
+stages:
+{% for ds in datasets %}
+  sample-{{ds}}:
+    wdir: ..
+    cmd: python -m scripts.sample-users {{ds}}
+    deps:
+    - random.toml
+    - scripts/sample-users.py
+    - data/cluster-genders.parquet
+    - data/{{ds}}/ratings.parquet
+    outs:
+    - data/{{ds}}/sample-users.csv
+    - data/{{ds}}/sample-ratings.csv
+    - data/{{ds}}/sample-stats.json
+{% endfor %}
+
+  sample:
+    cmd: python -m scripts.aggregate --users
+    wdir: ..
+    deps:
+    {% for ds in datasets %}- data/{{ds}}/sample-users.csv
+    - data/{{ds}}/sample-ratings.csv
+    {% endfor %}
+    outs:
+    - data/study-users.csv
+    - data/study-ratings.csv

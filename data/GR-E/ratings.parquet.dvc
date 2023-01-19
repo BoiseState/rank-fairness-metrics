@@ -1,0 +1,12 @@
+md5: e67367192ea5de3de4fa6dc1edde8a7c
+frozen: true
+deps:
+- path: goodreads/gr-cluster-ratings.parquet
+  repo:
+    url: https://github.com/BoiseState/ol-processing-tools.git
+    rev_lock: de599c48772897348a79c2e8605b566392d07caa
+    rev: master
+outs:
+- md5: 9207efc2b91514ae300352f4666394c5
+  size: 1400725167
+  path: ratings.parquet

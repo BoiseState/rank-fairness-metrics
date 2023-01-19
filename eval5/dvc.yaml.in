@@ -1,0 +1,82 @@
+stages:
+{% for ds in datasets %}
+  eval-split-{{ds}}:
+    cmd: python -m scripts.split-ratings -d eval5 --min-ratings 10 --test-ratings 5 {{ds}}
+    deps:
+    - random.toml
+    - scripts/split-ratings.py
+    - data/{{ds}}/ratings.parquet
+    outs:
+    - eval5/{{ds}}/test-ratings.parquet
+    wdir: ..
+
+  group-rel-{{ds}}:
+    cmd: python -m scripts.group-relevance -d eval5 --test-ratings {{ds}}
+    wdir: ..
+    deps:
+    - eval5/{{ds}}/test-ratings.parquet
+    - data/cluster-genders.parquet
+    outs:
+    - eval5/{{ds}}/test-ratings-group-relevance.csv.gz
+
+  {% for algo in ds.algorithms %}
+  {% if algo.endswith('-imp') %}
+  {% set aname = algo.replace('-imp', '') %}
+  {% set args = '--drop-ratings -N ' + algo %}
+  {% else %}
+  {% set aname = algo %}
+  {% set args = '' %}
+  {% endif %}
+
+  eval-train-{{ds}}-{{algo}}:
+    cmd: python -m scripts.train-model {{args}} --train-data eval5 {{ds}} {{aname}}
+    deps:
+    - random.toml
+    - tuning/{{ds}}/{{algo}}.json
+    - data/{{ds}}/ratings.parquet
+    - eval5/{{ds}}/test-ratings.parquet
+    outs:
+    - eval5/{{ds}}/{{algo}}.model
+    wdir: ..
+
+  measure-{{ds}}-{{algo}}:
+    cmd: python -m scripts.eval-algo --eval-dir eval5 {{args}} --pretrained -n 1000 {{ds}} {{aname}}
+    deps:
+    - tuning/{{ds}}/{{algo}}.json
+    - eval5/{{ds}}/test-ratings.parquet
+    - eval5/{{ds}}/{{algo}}.model
+    outs:
+    - eval5/{{ds}}/{{algo}}-recs.parquet
+    - eval5/{{ds}}/{{algo}}-metrics.json
+    wdir: ..
+
+  {{ds}}-{{algo}}-group-rel:
+    cmd: python -m scripts.group-relevance -d eval5 {{ds}} {{algo}}
+    wdir: ..
+    deps:
+    - eval5/{{ds}}/test-ratings.parquet
+    - data/cluster-genders.parquet
+    - eval5/{{ds}}/{{algo}}.model
+    outs:
+    - eval5/{{ds}}/{{algo}}-group-relevance.csv.gz
+
+  {{ds}}-{{algo}}-pairwise:
+    cmd: python -m scripts.measure-model-pairwise -d eval5 {{ds}} {{algo}}
+    wdir: ..
+    deps:
+    - scripts/measure-model-pairwise.py
+    {% for algo in ds.algorithms %}- eval5/{{ds}}/{{algo}}.model
+    {% endfor %}
+    outs:
+    - eval5/{{ds}}/{{algo}}-pairwise-metrics.json
+  {% endfor %}
+{% endfor %}
+
+  aggregate:
+    cmd: python -m scripts.aggregate --rec-perf -d eval5
+    wdir: ..
+    deps:
+    {% for ds, algo in rec_lists %}- eval/{{ds}}/{{algo}}-metrics.json
+    {% endfor %}
+    outs:
+    - eval5/rec-perf.csv

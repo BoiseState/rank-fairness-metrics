@@ -1,0 +1,5 @@
+outs:
+- md5: 34da63d12e3b7fcdf618acd989086529.dir
+  size: 1856073273
+  nfiles: 36
+  path: FairTrec19
