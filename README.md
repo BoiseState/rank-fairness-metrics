@@ -9,18 +9,22 @@ We aim to bridge the gap between theoretical and practical ap-plication of these
 
 The paper implemented several fair ranking metrics from following papers:
 
-FA\*IR: This metric is proposed by Zehlike et al. in  FA\*IR: A Fair Top-k Ranking Algorithm.(https://doi.org/10.1145/3132847.3132938)
-AWRF (attention-weighted rank fairness): This metric is proposed by Sapiezynski et al. in Quantifying the Impact of User Attention on Fair Group Representation in Ranked Lists. (https://doi.org/10.1145/3308560.3317595)
-IAA (inequity in amortized attention):  This metric is proposed by Biega et al. in Equity of Attention: Amortizing Individual Fairness in Rankings. 
-(https://doi.org/10.1145/3209978.3210063)
-DP (demographic parity), EUR (exposed utility ratio), RUR (realized utility ratio): This metric family is derived from Fairness of Exposure in Rankings written by Singh and Joachims. (https://doi.org/10.1145/3219819.3220088)
-EE (expected-exposure): This metric family is proposed by Diaz e.at. in Evaluating Stochastic Rankings with Expected Exposure (https://doi.org/10.1145/3340531.3411962)
+FA\*IR: This metric is proposed by Zehlike et al. in  [FA\*IR: A Fair Top-k Ranking Algorithm](https://doi.org/10.1145/3132847.3132938).
+
+AWRF (attention-weighted rank fairness): This metric is proposed by Sapiezynski et al. in [Quantifying the Impact of User Attention on Fair Group Representation in Ranked Lists](https://doi.org/10.1145/3308560.3317595).
+
+IAA (inequity in amortized attention):  This metric is proposed by Biega et al. in [Equity of Attention: Amortizing Individual Fairness in Rankings](https://doi.org/10.1145/3209978.3210063).
+
+DP (demographic parity), EUR (exposed utility ratio), RUR (realized utility ratio): This metric family is derived from [Fairness of Exposure in Rankings](https://doi.org/10.1145/3219819.3220088) written by Singh and Joachims. 
+
+EE (expected-exposure): This metric family is proposed by Diaz e.at. in [Evaluating Stochastic Rankings with Expected Exposure](https://doi.org/10.1145/3340531.3411962)
 
 **Dataset Description**
 
 The project used two dataset: GoodReads book data and Fair Ranking Track 2021 data.
 
 *GoodReads book data:* GoodReads book dataset can be obtained from https://bookdata.piret.info/. We used implicit feedback for generating recommendations. 
+
 *FairTREC dataset:* Fair ranking track dataset can be obtained from https://fair-trec.github.io/2020/index.html. 
 
 **Requirements:**
@@ -33,20 +37,31 @@ The project used two dataset: GoodReads book data and Fair Ranking Track 2021 da
 **Directory Layout**
 
 *bookgender* is a Python package that contains our support and configuration code. 
+
 *bookgender/fair_ranking/metrics* contains the scripts of metrics implementations.
+
 *bookgender/fair_metrics/Run_metrics_IR.py* or *bookgender/fair_metrics/Run_metrics_Rec.py* can be used to run the experiments depending on the dataset used.
+
 *bookgender/fair_metrics/metric_utils* contains all the utility functions that are needed to implements the metrics
+
 *eval5* will contain goodreads book recommendations.
+
 *data* will contain the datasets.
+
 *results* will contain metric scores for the ranked lists.
 
 **Citation**
 
 @inproceedings{raj2022measuring,
+
   title={Measuring fairness in ranked results: An analytical and empirical comparison},
+
   author={Raj, Amifa and Ekstrand, Michael D},
+
   booktitle={Proceedings of the 45th International ACM SIGIR Conference on Research and Development in Information Retrieval},
+
   pages={726--736},
+  
   year={2022}
 }
 
